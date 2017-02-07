@@ -5,3 +5,6 @@
 <b>Author:</b> Leofesk <br>
 <b>Date:</b> 07.02.2017 <br>
 <b>Project Link: https://github.com/Leofesk/QuickToDoManager </b>
+
+<b>Additional libraries: </b> <br>
+<b>Database:</b> SQLite (3.16.1)
