@@ -1,0 +1,24 @@
+Description:
+
+This application helps you collect all yours everyday tasks in one table.
+Simple and comfortable way to managing your tasks.
+
+Basic functional:
+
+- Create new database.
+- Open existing database.
+- Add / edit / delete task.
+- Change status.
+- Tracking time to deadline and history, when task was created.
+
+Support:
+
+If you find bug, please send mail to qtdm@leofesk.ru.
+Add to your message error code, for example [CODE:C_DBW_001], and small description about how you get this error.
+Thanks for help.
+
+Additional Information:
+
+If you interested please visit:
+- Author blog: https://leofesk.ru
+- Project page: https://leofesk.ru/projects/quicktodomanager
