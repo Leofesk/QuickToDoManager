@@ -29,8 +29,10 @@ public class DataBaseWorker {
             Database.createTablesInDatabase();
             Database.getAllNotesFromDatabase();
             addDataFromDatabaseToTable();
+            MainFrame.changeEnabledForToolbarAddButton(true);
             showMessage("Database [" + databaseName + "] opened successfully.");
         } catch (Exception e) {
+            MainFrame.changeEnabledForToolbarAddButton(false);
             showMessage("Can't open selected database. [CODE:C_DBW_001]");
         }
     }
@@ -128,6 +130,8 @@ public class DataBaseWorker {
     }
 
     public static void addNewNoteFromTable(String title, String text, String deadline) {
+        System.out.println("Databaseworker TITLE: " + title);
+        System.out.println("Databaseworker Text: " + text);
         Database.addNoteToDatabase(title, text, deadline);
         updateTableData();
     }
@@ -136,6 +140,7 @@ public class DataBaseWorker {
         Database.updateCurrentNoteFromDatabase(currentNoteID, title, text,
                 deadline, note.getCreatedTime(),
                 note.getEndTime(), note.getStatus());
+        System.out.println(note.getStatus());
         updateTableData();
     }
 

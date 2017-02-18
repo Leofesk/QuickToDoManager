@@ -106,7 +106,7 @@ public class NoteAddFrame extends JFrame {
             DataBaseWorker.addNewNoteFromTable(textFieldTaskName.getText(), textArea.getText(), textFieldDeadlineDate.getText());
             DataBaseWorker.showMessage("New task [" + textFieldTaskName.getText() + "] successfully created.");
         } else {
-            DataBaseWorker.showMessage("New task was not created. Title, text and deadline can't be empty. [CODE:V_NA_001]");
+            DataBaseWorker.showMessage("New task was not created. Title, text and deadline can't be empty.");
         }
 
         textFieldTaskName.setText("");
