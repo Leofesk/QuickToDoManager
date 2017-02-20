@@ -30,7 +30,7 @@ public class Database {
     public static void createTablesInDatabase() {
         try {
             connectToDatabase();
-            statement.execute("CREATE TABLE if NOT EXISTS `qtdm_notes` " +
+            statement.execute("CREATE TABLE IF NOT EXISTS `qtdm_notes` " +
                     "(`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                     "`title` VARCHAR(255) NOT NULL , " +
                     "`text` TEXT CHARACTER NOT NULL , " +
@@ -48,8 +48,17 @@ public class Database {
             if (connection.isClosed()) {
                 connectToDatabase();
             }
-            statement.execute("INSERT INTO `qtdm_notes`(`title`, `text`, `deadline`, `created`, `end`, `status`) " +
-                    "VALUES ('" + title + "','" + text + "','" + deadline + "','" + getCurrentDate() + "','Not done yet',0)");
+            String sql = "INSERT INTO qtdm_notes(title, text, deadline, created, end, status) VALUES(?,?,?,?,?,?)";
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+
+            pstmt.setString(1, title);
+            pstmt.setString(2, text);
+            pstmt.setString(3, deadline);
+            pstmt.setString(4, getCurrentDate());
+            pstmt.setString(5, "Not done yet");
+            pstmt.setDouble(6, 0);
+
+            pstmt.executeUpdate();
         } catch (SQLException e) {
             DataBaseWorker.showMessage("Can't add task to database. [CODE:M_DB_004]");
         }
@@ -65,12 +74,24 @@ public class Database {
                     "`deadline`='" + deadline + "'," +
                     "`created`='" + createdTime + "'," +
                     "`end`='" + endTime + "'," +
-                    "`status`='" + status + "'" +
+                    "`status`='" + convertStatus(status) + "'" +
                     "WHERE `id` = '" + id + "'");
             connection.close();
         } catch (SQLException e) {
             DataBaseWorker.showMessage("Can't update task. [CODE:M_DB_005]");
         }
+    }
+
+    private static String convertStatus(String status) {
+        if (status.equals("Done")) {
+            status = "1";
+        }
+
+        if (status.equals("In work")) {
+            status = "0";
+        }
+
+        return status;
     }
 
     public static void getAllNotesFromDatabase() {

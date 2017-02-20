@@ -12,6 +12,9 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static com.leofesk.quicktodomanager.model.Database.checkStatus;
 
@@ -29,8 +32,10 @@ public class DataBaseWorker {
             Database.createTablesInDatabase();
             Database.getAllNotesFromDatabase();
             addDataFromDatabaseToTable();
+            MainFrame.changeEnabledForToolbarAddButton(true);
             showMessage("Database [" + databaseName + "] opened successfully.");
         } catch (Exception e) {
+            MainFrame.changeEnabledForToolbarAddButton(false);
             showMessage("Can't open selected database. [CODE:C_DBW_001]");
         }
     }
@@ -128,15 +133,44 @@ public class DataBaseWorker {
     }
 
     public static void addNewNoteFromTable(String title, String text, String deadline) {
-        Database.addNoteToDatabase(title, text, deadline);
-        updateTableData();
+        if (isDate(deadline)) {
+            Database.addNoteToDatabase(title, text, deadline);
+            updateTableData();
+            DataBaseWorker.showMessage("New task [" + title + "] successfully created.");
+        } else {
+            MainFrame.setLabelForInfoAndMessages("Not correct date. Format DD.MM.YYYY (01.01.2000)");
+        }
     }
 
     public static void editNoteFromTable(String title, String text, String deadline) {
-        Database.updateCurrentNoteFromDatabase(currentNoteID, title, text,
-                deadline, note.getCreatedTime(),
-                note.getEndTime(), note.getStatus());
-        updateTableData();
+        if (isDate(deadline)) {
+            Database.updateCurrentNoteFromDatabase(currentNoteID, title, text,
+                    deadline, note.getCreatedTime(),
+                    note.getEndTime(), note.getStatus());
+            updateTableData();
+            DataBaseWorker.showMessage("Task [" + title + "] successfully updated.");
+        } else {
+            MainFrame.setLabelForInfoAndMessages("Not correct date. Format DD.MM.YYYY (01.01.2000)");
+        }
+    }
+
+    private static boolean isDate(String deadline) {
+        String s[];
+        int day;
+        int month;
+        int year;
+        try {
+            s = deadline.split("\\.");
+            day = Integer.parseInt(s[0]);
+            month = Integer.parseInt(s[1]);
+            year = Integer.parseInt(s[2]);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        if (!(day <= 31 && day > 0) || !(month <= 12 && month >= 1) || !(year <= 3000 && year >= 1950)) {
+            return false;
+        }
+        return true;
     }
 
     public static void addNoteToEditFrame() {

@@ -106,7 +106,6 @@ public class NoteEditFrame extends JFrame {
     private void actionButtonEdit() {
         if (DataBaseWorker.isCorrectNote(textFieldTaskName.getText(), textArea.getText(), textFieldDeadlineDate.getText())) {
             DataBaseWorker.editNoteFromTable(textFieldTaskName.getText(), textArea.getText(), textFieldDeadlineDate.getText());
-            DataBaseWorker.showMessage("Task [" + textFieldTaskName.getText() + "] successfully updated.");
         } else {
             DataBaseWorker.showMessage("Task was not updated. Title, text and deadline can't be empty. [CODE:V_NE_001]");
         }

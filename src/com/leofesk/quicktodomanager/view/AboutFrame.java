@@ -28,7 +28,7 @@ public class AboutFrame extends JFrame {
         setResizable(false);
 
         labelForAboutVersion.setHorizontalAlignment(SwingConstants.CENTER);
-        labelForAboutVersion.setText("Quick To Do Manager | Version: 1.0.0");
+        labelForAboutVersion.setText("Quick To Do Manager | Version: 1.1.6");
 
         textAreaForAboutText.setEditable(false);
         textAreaForAboutText.setColumns(20);

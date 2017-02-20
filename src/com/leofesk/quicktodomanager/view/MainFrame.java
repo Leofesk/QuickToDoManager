@@ -6,7 +6,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 
 public class MainFrame extends JFrame {
@@ -37,7 +36,7 @@ public class MainFrame extends JFrame {
     private NoteEditFrame noteEditFrame;
     private AboutFrame aboutFrame;
     private static ImageIcon imageAppIcon;
-    private JButton buttonAddForToolBar;
+    private static JButton buttonAddForToolBar;
     private JButton buttonEditForToolBar;
     private JButton buttonDeleteForToolBar;
     private JButton buttonChangeStatus;
@@ -149,17 +148,17 @@ public class MainFrame extends JFrame {
         mainToolBar.setRollover(true);
 
         buttonAddForToolBar.setText("Add");
-        buttonAddForToolBar.addActionListener(evt -> actionButtonAddForToolBar(evt));
+        buttonAddForToolBar.addActionListener(evt -> actionButtonAddForToolBar());
         mainToolBar.add(buttonAddForToolBar);
         buttonAddForToolBar.setEnabled(false);
 
         buttonEditForToolBar.setText("Edit");
-        buttonEditForToolBar.addActionListener(evt -> actionButtonEditForToolBar(evt));
+        buttonEditForToolBar.addActionListener(evt -> actionButtonEditForToolBar());
         mainToolBar.add(buttonEditForToolBar);
         buttonEditForToolBar.setEnabled(false);
 
         buttonDeleteForToolBar.setText("Delete");
-        buttonDeleteForToolBar.addActionListener(evt -> actionButtonDeleteForToolBar(evt));
+        buttonDeleteForToolBar.addActionListener(evt -> actionButtonDeleteForToolBar());
         mainToolBar.add(buttonDeleteForToolBar);
         buttonDeleteForToolBar.setEnabled(false);
 
@@ -194,11 +193,11 @@ public class MainFrame extends JFrame {
 
         buttonChangeStatus.setText("Apply status");
         buttonChangeStatus.setEnabled(false);
-        buttonChangeStatus.addActionListener(e -> actionButtonChangeStatus(e));
+        buttonChangeStatus.addActionListener(e -> actionButtonChangeStatus());
 
         comboBoxSelectStatusForNote.setModel(new DefaultComboBoxModel<>(new String[]{"In work", "Done"}));
         comboBoxSelectStatusForNote.setToolTipText("Select status for this task.");
-        comboBoxSelectStatusForNote.addActionListener(evt -> actionComboBoxSelectStatusForNote(evt));
+        comboBoxSelectStatusForNote.addActionListener(evt -> actionComboBoxSelectStatusForNote());
         comboBoxSelectStatusForNote.setEnabled(false);
 
         GroupLayout jPanel2Layout = new GroupLayout(panelForStatsAboutNote);
@@ -278,15 +277,15 @@ public class MainFrame extends JFrame {
         menuMain.setText("Menu");
 
         menuMainItemCreateDB.setText("Create database");
-        menuMainItemCreateDB.addActionListener(evt -> actionMenuMainItemCreateDB(evt));
+        menuMainItemCreateDB.addActionListener(evt -> actionMenuMainItemCreateDB());
         menuMain.add(menuMainItemCreateDB);
 
         menuMainItemOpenDB.setText("Open database");
-        menuMainItemOpenDB.addActionListener(evt -> actionMenuMainItemOpenDB(evt));
+        menuMainItemOpenDB.addActionListener(evt -> actionMenuMainItemOpenDB());
         menuMain.add(menuMainItemOpenDB);
 
         menuMainItemExit.setText("Exit");
-        menuMainItemExit.addActionListener(evt -> actionMenuMainItemExit(evt));
+        menuMainItemExit.addActionListener(evt -> actionMenuMainItemExit());
         menuMain.add(menuMainItemExit);
 
         menuBar.add(menuMain);
@@ -294,7 +293,7 @@ public class MainFrame extends JFrame {
         menuHelp.setText("Help");
 
         menuHelpItemAbout.setText("About");
-        menuHelpItemAbout.addActionListener(evt -> actionMenuHelpItemAbout(evt));
+        menuHelpItemAbout.addActionListener(evt -> actionMenuHelpItemAbout());
         menuHelp.add(menuHelpItemAbout);
 
         menuBar.add(menuHelp);
@@ -334,20 +333,23 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    private void actionButtonEditForToolBar(ActionEvent evt) {
+    private void actionButtonEditForToolBar() {
         noteEditFrame.dispose();
         DataBaseWorker.addNoteToEditFrame();
         noteEditFrame.setVisible(true);
     }
 
-    private void actionButtonDeleteForToolBar(ActionEvent evt) {
+    private void actionButtonDeleteForToolBar() {
         DataBaseWorker.deleteSelectedNote();
         buttonEditForToolBar.setEnabled(false);
         buttonDeleteForToolBar.setEnabled(false);
         DataBaseWorker.clearViewBlock();
+        comboBoxSelectStatusForNote.setSelectedItem("In work");
+        comboBoxSelectStatusForNote.setEnabled(false);
+        buttonChangeStatus.setEnabled(false);
     }
 
-    private void actionMenuMainItemCreateDB(ActionEvent evt) {
+    private void actionMenuMainItemCreateDB() {
         String databaseName = JOptionPane.showInputDialog(
                 null,
                 "Choose name for new database:",
@@ -361,33 +363,36 @@ public class MainFrame extends JFrame {
         }
     }
 
-    private void actionMenuMainItemOpenDB(java.awt.event.ActionEvent evt) {
+    private void actionMenuMainItemOpenDB() {
         DataBaseWorker.chooseDatabase();
-        buttonAddForToolBar.setEnabled(true);
     }
 
-    private void actionMenuMainItemExit(java.awt.event.ActionEvent evt) {
+    private void actionMenuMainItemExit() {
         System.exit(0);
     }
 
-    private void actionComboBoxSelectStatusForNote(java.awt.event.ActionEvent evt) {
+    private void actionComboBoxSelectStatusForNote() {
         buttonChangeStatus.setEnabled(true);
     }
 
-    private void actionButtonAddForToolBar(ActionEvent evt) {
+    private void actionButtonAddForToolBar() {
         noteAddFrame.dispose();
         noteAddFrame.setVisible(true);
     }
 
-    private void actionButtonChangeStatus(java.awt.event.ActionEvent evt) {
+    private void actionButtonChangeStatus() {
         String value = comboBoxSelectStatusForNote.getSelectedItem().toString();
         DataBaseWorker.changeStatusToCurrentNote(value);
         DataBaseWorker.showSelectedNoteInfo(DataBaseWorker.getCurrentNoteID());
     }
 
-    private void actionMenuHelpItemAbout(java.awt.event.ActionEvent evt) {
+    private void actionMenuHelpItemAbout() {
         aboutFrame.dispose();
         aboutFrame.setVisible(true);
+    }
+
+    public static void changeEnabledForToolbarAddButton(boolean enabled) {
+        buttonAddForToolBar.setEnabled(enabled);
     }
 
     public static void setLabelForInfoAndMessages(String message) {
