@@ -1,6 +1,7 @@
-package com.leofesk.quicktodomanager.view;
+package com.leofesk.quicktodomanager.view.help;
 
 import com.leofesk.quicktodomanager.controller.DataBaseWorker;
+import com.leofesk.quicktodomanager.view.MainFrame;
 
 import javax.swing.*;
 import java.awt.*;

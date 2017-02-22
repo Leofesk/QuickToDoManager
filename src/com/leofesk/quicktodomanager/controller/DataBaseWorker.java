@@ -3,18 +3,15 @@ package com.leofesk.quicktodomanager.controller;
 import com.leofesk.quicktodomanager.model.Database;
 import com.leofesk.quicktodomanager.model.Note;
 import com.leofesk.quicktodomanager.model.Options;
-import com.leofesk.quicktodomanager.view.AboutFrame;
+import com.leofesk.quicktodomanager.view.help.AboutFrame;
 import com.leofesk.quicktodomanager.view.MainFrame;
-import com.leofesk.quicktodomanager.view.NoteEditFrame;
+import com.leofesk.quicktodomanager.view.notes.EditFrame;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import java.io.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import static com.leofesk.quicktodomanager.model.Database.checkStatus;
 
@@ -175,9 +172,9 @@ public class DataBaseWorker {
 
     public static void addNoteToEditFrame() {
         try {
-            NoteEditFrame.setTextFieldTaskName(note.getTitle());
-            NoteEditFrame.setTextArea(note.getText());
-            NoteEditFrame.setTextFieldDeadlineDate(note.getDeadline());
+            EditFrame.setTextFieldTaskName(note.getTitle());
+            EditFrame.setTextArea(note.getText());
+            EditFrame.setTextFieldDeadlineDate(note.getDeadline());
         } catch (Exception e) {
             showMessage("Can't add task to database. [CODE:C_DBW_003]");
         }

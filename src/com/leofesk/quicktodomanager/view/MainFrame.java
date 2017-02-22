@@ -1,6 +1,10 @@
 package com.leofesk.quicktodomanager.view;
 
 import com.leofesk.quicktodomanager.controller.DataBaseWorker;
+import com.leofesk.quicktodomanager.view.help.AboutFrame;
+import com.leofesk.quicktodomanager.view.notes.AddFrame;
+import com.leofesk.quicktodomanager.view.notes.EditFrame;
+import com.leofesk.quicktodomanager.view.settings.GeneralFrame;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -19,9 +23,11 @@ public class MainFrame extends JFrame {
     private static JLabel labelDeadlineDate;
     private static JLabel labelCreatedDate;
     private JMenu menuMain;
+    private JMenu menuSettings;
     private JMenu menuHelp;
     private JMenuBar menuBar;
     private JMenuItem menuHelpItemAbout;
+    private JMenuItem menuSettingsItemGeneral;
     private JMenuItem menuMainItemCreateDB;
     private JMenuItem menuMainItemOpenDB;
     private JMenuItem menuMainItemExit;
@@ -32,9 +38,10 @@ public class MainFrame extends JFrame {
     public static JTable tableNotes;
     private static JTextArea textAreaForViewCurrentNote;
     private JToolBar mainToolBar;
-    private NoteAddFrame noteAddFrame;
-    private NoteEditFrame noteEditFrame;
+    private AddFrame addFrame;
+    private EditFrame editFrame;
     private AboutFrame aboutFrame;
+    private GeneralFrame generalFrame;
     private static ImageIcon imageAppIcon;
     private static JButton buttonAddForToolBar;
     private JButton buttonEditForToolBar;
@@ -49,9 +56,10 @@ public class MainFrame extends JFrame {
     }
 
     private void initComponents() {
-        noteAddFrame = new NoteAddFrame();
-        noteEditFrame = new NoteEditFrame();
+        addFrame = new AddFrame();
+        editFrame = new EditFrame();
         aboutFrame = new AboutFrame();
+        generalFrame = new GeneralFrame();
         scrollPaneForTableNotes = new JScrollPane();
         tableNotes = new JTable();
         mainToolBar = new JToolBar();
@@ -78,6 +86,8 @@ public class MainFrame extends JFrame {
         menuMainItemCreateDB = new JMenuItem();
         menuMainItemOpenDB = new JMenuItem();
         menuMainItemExit = new JMenuItem();
+        menuSettings = new JMenu();
+        menuSettingsItemGeneral = new JMenuItem();
         menuHelp = new JMenu();
         menuHelpItemAbout = new JMenuItem();
         centerRenderer = new DefaultTableCellRenderer();
@@ -290,6 +300,13 @@ public class MainFrame extends JFrame {
 
         menuBar.add(menuMain);
 
+        menuSettings.setText("Settings");
+        menuSettingsItemGeneral.setText("General");
+        menuSettingsItemGeneral.addActionListener(evt -> actionMenuSettingsItemGeneral());
+        menuSettings.add(menuSettingsItemGeneral);
+
+        menuBar.add(menuSettings);
+
         menuHelp.setText("Help");
 
         menuHelpItemAbout.setText("About");
@@ -333,10 +350,15 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
     }
 
+    private void actionMenuSettingsItemGeneral() {
+        generalFrame.dispose();
+        generalFrame.setVisible(true);
+    }
+
     private void actionButtonEditForToolBar() {
-        noteEditFrame.dispose();
+        editFrame.dispose();
         DataBaseWorker.addNoteToEditFrame();
-        noteEditFrame.setVisible(true);
+        editFrame.setVisible(true);
     }
 
     private void actionButtonDeleteForToolBar() {
@@ -376,8 +398,8 @@ public class MainFrame extends JFrame {
     }
 
     private void actionButtonAddForToolBar() {
-        noteAddFrame.dispose();
-        noteAddFrame.setVisible(true);
+        addFrame.dispose();
+        addFrame.setVisible(true);
     }
 
     private void actionButtonChangeStatus() {

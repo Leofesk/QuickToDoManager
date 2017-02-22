@@ -1,30 +1,31 @@
-package com.leofesk.quicktodomanager.view;
+package com.leofesk.quicktodomanager.view.notes;
 
 import com.leofesk.quicktodomanager.controller.DataBaseWorker;
+import com.leofesk.quicktodomanager.view.MainFrame;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class NoteAddFrame extends JFrame {
-    private JButton buttonAdd;
+public class EditFrame extends JFrame {
+    private JButton buttonAddOrEdit;
     private JLabel labelTaskName;
     private JLabel labelDeadline;
     private JLabel labelFormatDeadline;
     private JScrollPane scrollPaneForTextArea;
-    private JTextArea textArea;
-    private JTextField textFieldDeadlineDate;
-    private JTextField textFieldTaskName;
+    private static JTextArea textArea;
+    private static JTextField textFieldDeadlineDate;
+    private static JTextField textFieldTaskName;
     private static ImageIcon imageAppIcon;
     private String pathToAppLogo = "/img/AppLogo.png";
 
-    public NoteAddFrame() {
+    public EditFrame() {
         initComponents();
     }
 
     private void initComponents() {
         scrollPaneForTextArea = new JScrollPane();
         textArea = new JTextArea();
-        buttonAdd = new JButton();
+        buttonAddOrEdit = new JButton();
         labelTaskName = new JLabel();
         textFieldDeadlineDate = new JTextField();
         labelDeadline = new JLabel();
@@ -33,24 +34,26 @@ public class NoteAddFrame extends JFrame {
         imageAppIcon = new ImageIcon(MainFrame.class.getResource(pathToAppLogo));
         setIconImage(imageAppIcon.getImage());
 
-        setTitle(" Add new note");
+        setTitle(" Edit note");
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
 
         textArea.setColumns(20);
         textArea.setRows(5);
+        textArea.setWrapStyleWord(true);
         textArea.setLineWrap(true);
         textArea.setMargin(new Insets(5, 5, 5, 5));
         scrollPaneForTextArea.setViewportView(textArea);
 
-        buttonAdd.addActionListener(e -> actionButtonAdd());
-        buttonAdd.setText("ОК");
+        buttonAddOrEdit.addActionListener(e -> actionButtonEdit());
+        buttonAddOrEdit.setText("ОК");
 
         labelTaskName.setText("Title:");
         textFieldDeadlineDate.setText("11.08.1992");
         labelDeadline.setText("Deadline:");
         labelFormatDeadline.setText("Format: DD.MM.YYYY");
-        textFieldTaskName.setText("");
+        textFieldTaskName.setText("Name Task");
+
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -71,11 +74,11 @@ public class NoteAddFrame extends JFrame {
                                                         .addGroup(layout.createSequentialGroup()
                                                                 .addComponent(labelDeadline)
                                                                 .addGap(10, 10, 10)
-                                                                .addComponent(textFieldDeadlineDate, GroupLayout.PREFERRED_SIZE, 84, GroupLayout.PREFERRED_SIZE)
+                                                                .addComponent(textFieldDeadlineDate, GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                                 .addGap(10, 10, 10)
                                                                 .addComponent(labelFormatDeadline, GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
                                                                 .addGap(10, 10, 10)
-                                                                .addComponent(buttonAdd, GroupLayout.PREFERRED_SIZE, 131, GroupLayout.PREFERRED_SIZE)))))
+                                                                .addComponent(buttonAddOrEdit, GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                                 .addGap(10, 10, 10))
         );
 
@@ -92,7 +95,7 @@ public class NoteAddFrame extends JFrame {
                                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(labelDeadline, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
                                         .addComponent(textFieldDeadlineDate, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(buttonAdd)
+                                        .addComponent(buttonAddOrEdit)
                                         .addComponent(labelFormatDeadline, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE))
                                 .addGap(10, 10, 10))
         );
@@ -101,17 +104,24 @@ public class NoteAddFrame extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    private void actionButtonAdd() {
+    private void actionButtonEdit() {
         if (DataBaseWorker.isCorrectNote(textFieldTaskName.getText(), textArea.getText(), textFieldDeadlineDate.getText())) {
-            DataBaseWorker.addNewNoteFromTable(textFieldTaskName.getText(), textArea.getText(), textFieldDeadlineDate.getText());
+            DataBaseWorker.editNoteFromTable(textFieldTaskName.getText(), textArea.getText(), textFieldDeadlineDate.getText());
         } else {
-            DataBaseWorker.showMessage("New task was not created. Title, text and deadline can't be empty.");
+            DataBaseWorker.showMessage("Task was not updated. Title, text and deadline can't be empty. [CODE:V_NE_001]");
         }
-
-        textFieldTaskName.setText("");
-        textArea.setText("");
-        textFieldDeadlineDate.setText("01.01.2000");
-
         dispose();
+    }
+
+    public static void setTextArea(String text) {
+        textArea.setText(text);
+    }
+
+    public static void setTextFieldDeadlineDate(String deadline) {
+        textFieldDeadlineDate.setText(deadline);
+    }
+
+    public static void setTextFieldTaskName(String title) {
+        textFieldTaskName.setText(title);
     }
 }
