@@ -5,6 +5,8 @@ import com.leofesk.quicktodomanager.view.MainFrame;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class AddFrame extends JFrame {
     private JButton buttonAdd;
@@ -48,7 +50,7 @@ public class AddFrame extends JFrame {
         buttonAdd.setText("ОК");
 
         labelTaskName.setText("Title:");
-        textFieldDeadlineDate.setText("11.08.1992");
+        textFieldDeadlineDate.setText(DataBaseWorker.getNextDay());
         labelDeadline.setText("Deadline:");
         labelFormatDeadline.setText("Format: DD.MM.YYYY");
         textFieldTaskName.setText("");
@@ -98,6 +100,13 @@ public class AddFrame extends JFrame {
                                 .addGap(10, 10, 10))
         );
 
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                MainFrame.setEnabledWindowElement(true);
+            }
+        });
+
         pack();
         setLocationRelativeTo(null);
     }
@@ -114,5 +123,6 @@ public class AddFrame extends JFrame {
         textFieldDeadlineDate.setText("01.01.2000");
 
         dispose();
+        MainFrame.setEnabledWindowElement(true);
     }
 }

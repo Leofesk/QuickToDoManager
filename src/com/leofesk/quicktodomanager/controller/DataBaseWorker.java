@@ -6,12 +6,18 @@ import com.leofesk.quicktodomanager.model.Options;
 import com.leofesk.quicktodomanager.view.help.AboutFrame;
 import com.leofesk.quicktodomanager.view.MainFrame;
 import com.leofesk.quicktodomanager.view.notes.EditFrame;
+import javafx.scene.input.DataFormat;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.xml.crypto.Data;
 import java.io.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import static com.leofesk.quicktodomanager.model.Database.checkStatus;
 
@@ -91,14 +97,36 @@ public class DataBaseWorker {
     }
 
     public static void createDatabase(String databaseName) {
-        Database.createNewDatabase(databaseName);
-        addNewNoteFromTable("Task sample.",
-                "This is first task in your database. " +
-                        "You can add, edit and delete task by clicking in table row. " +
-                        "Change status In work/Done",
-                Database.getCurrentDate());
-        updateTableData();
-        showMessage("New database [" + databaseName + "] created successfully.");
+        if (isAlreadyExistDB(databaseName)) {
+            if (JOptionPane.showConfirmDialog(null,
+                    "Database [" + databaseName + "] is already exist, open?\n" +
+                            "If you don't want open existing database, please try create database with another name.",
+                    "It's database exist!",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                Options.updateOptionsValue("databaseName", databaseName);
+                loadDataFromDatabaseToTable(databaseName);
+            }
+        } else {
+            Database.createNewDatabase(databaseName);
+            addNewNoteFromTable("Task sample.",
+                    "This is first task in your database. " +
+                            "You can add, edit and delete task by clicking in table row. " +
+                            "Change status In work/Done",
+                    getNextDay());
+            updateTableData();
+            showMessage("New database [" + databaseName + "] created successfully.");
+        }
+    }
+
+    private static boolean isAlreadyExistDB(String databaseName) {
+        String fullPath = Options.getOptionsValue("customDatabasePath") + databaseName + ".qtdm";
+        File file = new File(fullPath);
+        if (file.exists()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static void showSelectedNoteInfo(int id) {
@@ -135,7 +163,7 @@ public class DataBaseWorker {
             updateTableData();
             DataBaseWorker.showMessage("New task [" + title + "] successfully created.");
         } else {
-            MainFrame.setLabelForInfoAndMessages("Not correct date. Format DD.MM.YYYY (01.01.2000)");
+            MainFrame.setLabelForInfoAndMessages("Not correct date. Format DD.MM.YYYY");
         }
     }
 
@@ -147,7 +175,7 @@ public class DataBaseWorker {
             updateTableData();
             DataBaseWorker.showMessage("Task [" + title + "] successfully updated.");
         } else {
-            MainFrame.setLabelForInfoAndMessages("Not correct date. Format DD.MM.YYYY (01.01.2000)");
+            MainFrame.setLabelForInfoAndMessages("Not correct date. Format DD.MM.YYYY");
         }
     }
 
@@ -164,7 +192,7 @@ public class DataBaseWorker {
         } catch (NumberFormatException nfe) {
             return false;
         }
-        if (!(day <= 31 && day > 0) || !(month <= 12 && month >= 1) || !(year <= 3000 && year >= 1950)) {
+        if (!(day <= 31 && day > 0) || !(month <= 12 && month >= 1) || !(year <= 2050 && year >= 1950)) {
             return false;
         }
         return true;
@@ -197,6 +225,17 @@ public class DataBaseWorker {
 
     public static int getCurrentNoteID() {
         return currentNoteID;
+    }
+
+    public static String getNextDay() {
+        Date date = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DATE, 1);
+        date = c.getTime();
+        DateFormat dataFormat = new SimpleDateFormat("dd.MM.yyyy");
+        String nextDay = dataFormat.format(date);
+        return nextDay;
     }
 
     public static void clearViewBlock() {

@@ -68,6 +68,8 @@ public class Options {
                 options.setProperty("customDatabasePath", defaultDatabasePathLinux);
             }
             options.setProperty("databaseName", "notes");
+            options.setProperty("language", "eng");
+            options.setProperty("version", "1.1.6");
             output = new FileOutputStream(currentOptionsFilePath);
             options.store(output, "QTDM - Default options file.");
         } catch (IOException e) {
@@ -77,7 +79,7 @@ public class Options {
                 try {
                     output.close();
                 } catch (IOException ex) {
-                    DataBaseWorker.showMessage("CCan't create new config file. Check your rights. [CODE:M_OP_005]");
+                    DataBaseWorker.showMessage("Can't create new config file. Check your rights. [CODE:M_OP_005]");
                 }
             }
         }

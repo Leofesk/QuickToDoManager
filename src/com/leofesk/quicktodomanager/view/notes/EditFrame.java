@@ -5,6 +5,8 @@ import com.leofesk.quicktodomanager.view.MainFrame;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class EditFrame extends JFrame {
     private JButton buttonAddOrEdit;
@@ -49,8 +51,8 @@ public class EditFrame extends JFrame {
         buttonAddOrEdit.setText("ОК");
 
         labelTaskName.setText("Title:");
-        textFieldDeadlineDate.setText("11.08.1992");
         labelDeadline.setText("Deadline:");
+        textFieldDeadlineDate.setText(DataBaseWorker.getNextDay());
         labelFormatDeadline.setText("Format: DD.MM.YYYY");
         textFieldTaskName.setText("Name Task");
 
@@ -100,6 +102,13 @@ public class EditFrame extends JFrame {
                                 .addGap(10, 10, 10))
         );
 
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                MainFrame.setEnabledWindowElement(true);
+            }
+        });
+
         pack();
         setLocationRelativeTo(null);
     }
@@ -111,6 +120,7 @@ public class EditFrame extends JFrame {
             DataBaseWorker.showMessage("Task was not updated. Title, text and deadline can't be empty. [CODE:V_NE_001]");
         }
         dispose();
+        MainFrame.setEnabledWindowElement(true);
     }
 
     public static void setTextArea(String text) {

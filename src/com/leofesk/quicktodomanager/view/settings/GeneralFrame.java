@@ -3,6 +3,8 @@ package com.leofesk.quicktodomanager.view.settings;
 import com.leofesk.quicktodomanager.view.MainFrame;
 
 import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class GeneralFrame extends JFrame {
 
@@ -93,6 +95,13 @@ public class GeneralFrame extends JFrame {
                                         .addComponent(jButton2))
                                 .addGap(10, 10, 10))
         );
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                MainFrame.setEnabledWindowElement(true);
+            }
+        });
 
         pack();
         setLocationRelativeTo(null);

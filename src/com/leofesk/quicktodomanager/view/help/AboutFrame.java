@@ -1,10 +1,13 @@
 package com.leofesk.quicktodomanager.view.help;
 
 import com.leofesk.quicktodomanager.controller.DataBaseWorker;
+import com.leofesk.quicktodomanager.model.Options;
 import com.leofesk.quicktodomanager.view.MainFrame;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class AboutFrame extends JFrame {
     private JLabel labelForAboutVersion;
@@ -29,7 +32,7 @@ public class AboutFrame extends JFrame {
         setResizable(false);
 
         labelForAboutVersion.setHorizontalAlignment(SwingConstants.CENTER);
-        labelForAboutVersion.setText("Quick To Do Manager | Version: 1.1.6");
+        labelForAboutVersion.setText(getTitleForLabel());
 
         textAreaForAboutText.setEditable(false);
         textAreaForAboutText.setColumns(20);
@@ -61,10 +64,21 @@ public class AboutFrame extends JFrame {
                                 .addGap(10, 10, 10))
         );
 
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                MainFrame.setEnabledWindowElement(true);
+            }
+        });
+
         pack();
         setLocationRelativeTo(null);
 
         loadAboutText();
+    }
+
+    private String getTitleForLabel() {
+        return "Quick To Do Manager | Version: " + Options.getOptionsValue("version");
     }
 
     private void loadAboutText() {
