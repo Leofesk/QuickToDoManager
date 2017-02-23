@@ -1,6 +1,7 @@
 package com.leofesk.quicktodomanager.view.help;
 
 import com.leofesk.quicktodomanager.controller.DataBaseWorker;
+import com.leofesk.quicktodomanager.controller.Message;
 import com.leofesk.quicktodomanager.model.Options;
 import com.leofesk.quicktodomanager.view.MainFrame;
 
@@ -14,7 +15,6 @@ public class AboutFrame extends JFrame {
     private JScrollPane jScrollPane1;
     private static JTextArea textAreaForAboutText;
     private static ImageIcon imageAppIcon;
-    private String pathToAppLogo = "/img/AppLogo.png";
 
     public AboutFrame() {
         initComponents();
@@ -24,11 +24,11 @@ public class AboutFrame extends JFrame {
         labelForAboutVersion = new JLabel();
         jScrollPane1 = new JScrollPane();
         textAreaForAboutText = new JTextArea();
-        imageAppIcon = new ImageIcon(MainFrame.class.getResource(pathToAppLogo));
+        imageAppIcon = new ImageIcon(AboutFrame.class.getResource(Options.getOptionsValue("appLogo")));
         setIconImage(imageAppIcon.getImage());
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(" About");
+        setTitle(Message.getText("frameAboutTitle"));
         setResizable(false);
 
         labelForAboutVersion.setHorizontalAlignment(SwingConstants.CENTER);
@@ -78,7 +78,7 @@ public class AboutFrame extends JFrame {
     }
 
     private String getTitleForLabel() {
-        return "Quick To Do Manager | Version: " + Options.getOptionsValue("version");
+        return Message.getText("aboutBlockTitle")+" " + Options.getOptionsValue("version");
     }
 
     private void loadAboutText() {

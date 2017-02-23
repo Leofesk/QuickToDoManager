@@ -6,13 +6,11 @@ import com.leofesk.quicktodomanager.model.Options;
 import com.leofesk.quicktodomanager.view.help.AboutFrame;
 import com.leofesk.quicktodomanager.view.MainFrame;
 import com.leofesk.quicktodomanager.view.notes.EditFrame;
-import javafx.scene.input.DataFormat;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
-import javax.xml.crypto.Data;
 import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -36,20 +34,20 @@ public class DataBaseWorker {
             Database.getAllNotesFromDatabase();
             addDataFromDatabaseToTable();
             MainFrame.changeEnabledForToolbarAddButton(true);
-            showMessage("Database [" + databaseName + "] opened successfully.");
+            showMessage(Message.getText("database") + " [" + databaseName + "] " + Message.getText("dbwLoadDataFromDBSuccess"));
         } catch (Exception e) {
             MainFrame.changeEnabledForToolbarAddButton(false);
-            showMessage("Can't open selected database. [CODE:C_DBW_001]");
+            showMessage(Message.getText("errorDBWLoadDataFromDB"));
         }
     }
 
     public static void chooseDatabase() {
         JFileChooser chooseDB = new JFileChooser();
-        FileFilter filter = new FileNameExtensionFilter("QTDM database files | .qtdm", "qtdm");
+        FileFilter filter = new FileNameExtensionFilter(Message.getText("dbwChooseDBDesc") + " | .qtdm", "qtdm");
         chooseDB.setAcceptAllFileFilterUsed(false);
         chooseDB.setFileFilter(filter);
 
-        int resultForFileChooser = chooseDB.showDialog(null, "Open database");
+        int resultForFileChooser = chooseDB.showDialog(null, Message.getText("dbwButtonOpenDB"));
         if (resultForFileChooser == JFileChooser.APPROVE_OPTION) {
             String tempSelectedFileName = chooseDB.getSelectedFile().getName();
             tempSelectedFileName = tempSelectedFileName.replaceFirst("[.][^.]+$", "");
@@ -82,7 +80,11 @@ public class DataBaseWorker {
 
     public static void openAbout() {
         try {
-            InputStream inputStream = DataBaseWorker.class.getResourceAsStream("/help/about.txt");
+            String tempPath = "about_en_US";
+            if (Options.getOptionsValue("language").equals("ru")) {
+                tempPath = "about_ru_RU";
+            }
+            InputStream inputStream = DataBaseWorker.class.getResourceAsStream("/help/about/" + tempPath + ".txt");
             InputStreamReader inputReader = new InputStreamReader(inputStream);
             BufferedReader reader = new BufferedReader(inputReader);
 
@@ -92,16 +94,17 @@ public class DataBaseWorker {
             }
             reader.close();
         } catch (IOException ioe) {
-            showMessage("Can't show about information. [CODE:C_DBW_002]");
+            showMessage(Message.getText("errorDBWOpenAboutCatch"));
         }
     }
 
     public static void createDatabase(String databaseName) {
         if (isAlreadyExistDB(databaseName)) {
             if (JOptionPane.showConfirmDialog(null,
-                    "Database [" + databaseName + "] is already exist, open?\n" +
-                            "If you don't want open existing database, please try create database with another name.",
-                    "It's database exist!",
+                    Message.getText("database") + " [" + databaseName + "] " +
+                            Message.getText("dbwCreateDBMessage") + "\n" +
+                            Message.getText("dbwCreateDBMessageAdditional"),
+                    Message.getText("dbwCreateDBTitle"),
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
                 Options.updateOptionsValue("databaseName", databaseName);
@@ -109,13 +112,11 @@ public class DataBaseWorker {
             }
         } else {
             Database.createNewDatabase(databaseName);
-            addNewNoteFromTable("Task sample.",
-                    "This is first task in your database. " +
-                            "You can add, edit and delete task by clicking in table row. " +
-                            "Change status In work/Done",
+            addNewNoteFromTable(Message.getText("dbwNewNoteTitle"),
+                    Message.getText("dbwNewNoteText"),
                     getNextDay());
             updateTableData();
-            showMessage("New database [" + databaseName + "] created successfully.");
+            showMessage(Message.getText("database") + " [" + databaseName + "] " + Message.getText("dbwCreateSuccess"));
         }
     }
 
@@ -147,23 +148,23 @@ public class DataBaseWorker {
         } else {
             Database.updateCurrentNoteFromDatabase(currentNoteID, note.getTitle(),
                     note.getText(), note.getDeadline(),
-                    note.getCreatedTime(), "Not done yet", "0");
+                    note.getCreatedTime(), Message.getText("databaseEndField"), "0");
         }
         updateTableData();
-        showMessage("Status for current task was successfully updated.");
+        showMessage(Message.getText("dbwChangeStatusNoteSuccess"));
     }
 
     public static void showMessage(String message) {
-        MainFrame.setLabelForInfoAndMessages("Info: " + message);
+        MainFrame.setLabelForInfoAndMessages(Message.getText("labelInfo") + message);
     }
 
     public static void addNewNoteFromTable(String title, String text, String deadline) {
         if (isDate(deadline)) {
             Database.addNoteToDatabase(title, text, deadline);
             updateTableData();
-            DataBaseWorker.showMessage("New task [" + title + "] successfully created.");
+            DataBaseWorker.showMessage(Message.getText("task") + " [" + title + "] " + Message.getText("dbwCreateSuccess"));
         } else {
-            MainFrame.setLabelForInfoAndMessages("Not correct date. Format DD.MM.YYYY");
+            MainFrame.setLabelForInfoAndMessages(Message.getText("dbwNotCorrectFormat"));
         }
     }
 
@@ -173,9 +174,9 @@ public class DataBaseWorker {
                     deadline, note.getCreatedTime(),
                     note.getEndTime(), note.getStatus());
             updateTableData();
-            DataBaseWorker.showMessage("Task [" + title + "] successfully updated.");
+            DataBaseWorker.showMessage(Message.getText("task") + " [" + title + "] " + Message.getText("dbwUpdatedSuccess"));
         } else {
-            MainFrame.setLabelForInfoAndMessages("Not correct date. Format DD.MM.YYYY");
+            MainFrame.setLabelForInfoAndMessages(Message.getText("dbwNotCorrectFormat"));
         }
     }
 
@@ -184,6 +185,7 @@ public class DataBaseWorker {
         int day;
         int month;
         int year;
+
         try {
             s = deadline.split("\\.");
             day = Integer.parseInt(s[0]);
@@ -192,6 +194,7 @@ public class DataBaseWorker {
         } catch (NumberFormatException nfe) {
             return false;
         }
+
         if (!(day <= 31 && day > 0) || !(month <= 12 && month >= 1) || !(year <= 2050 && year >= 1950)) {
             return false;
         }
@@ -204,7 +207,7 @@ public class DataBaseWorker {
             EditFrame.setTextArea(note.getText());
             EditFrame.setTextFieldDeadlineDate(note.getDeadline());
         } catch (Exception e) {
-            showMessage("Can't add task to database. [CODE:C_DBW_003]");
+            showMessage(Message.getText("errorDBWAddNoteToFrame"));
         }
     }
 
@@ -239,10 +242,21 @@ public class DataBaseWorker {
     }
 
     public static void clearViewBlock() {
-        MainFrame.setLabelNoteNameForViewCurrentNote("Choose task to view details.");
-        MainFrame.setLabelCreatedDate("Select task");
-        MainFrame.setLabelDeadlineDate("Select task");
-        MainFrame.setLabelEndDate("Select task");
-        MainFrame.setTextAreaForViewCurrentNote("Not chosen task to view.");
+        MainFrame.setLabelNoteNameForViewCurrentNote(Message.getText("clearViewNoteTitle"));
+        MainFrame.setLabelCreatedDate(Message.getText("clearViewNoteCreated"));
+        MainFrame.setLabelDeadlineDate(Message.getText("clearViewNoteDeadline"));
+        MainFrame.setLabelEndDate(Message.getText("clearViewNoteEnd"));
+        MainFrame.setTextAreaForViewCurrentNote(Message.getText("clearViewNoteText"));
+    }
+
+    public static void changeLanguage(String tempChoosingLang) {
+        if (tempChoosingLang.equals(Message.getText("chooseLangEnglish"))) {
+            Options.setLang("en");
+            Options.setCountry("US");
+        }
+        if (tempChoosingLang.equals(Message.getText("chooseLangRussian"))) {
+            Options.setLang("ru");
+            Options.setCountry("RU");
+        }
     }
 }

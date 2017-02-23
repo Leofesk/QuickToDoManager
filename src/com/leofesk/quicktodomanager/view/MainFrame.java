@@ -1,6 +1,8 @@
 package com.leofesk.quicktodomanager.view;
 
 import com.leofesk.quicktodomanager.controller.DataBaseWorker;
+import com.leofesk.quicktodomanager.controller.Message;
+import com.leofesk.quicktodomanager.model.Options;
 import com.leofesk.quicktodomanager.view.help.AboutFrame;
 import com.leofesk.quicktodomanager.view.notes.AddFrame;
 import com.leofesk.quicktodomanager.view.notes.EditFrame;
@@ -52,7 +54,6 @@ public class MainFrame extends JFrame {
     private static JButton buttonDeleteForToolBar;
     private static JButton buttonChangeStatus;
     private static JComboBox<String> comboBoxSelectStatusForNote;
-    private String pathToAppLogo = "/img/AppLogo.png";
     private DefaultTableCellRenderer centerRenderer;
 
     public MainFrame() {
@@ -95,7 +96,7 @@ public class MainFrame extends JFrame {
         menuHelp = new JMenu();
         menuHelpItemAbout = new JMenuItem();
         centerRenderer = new DefaultTableCellRenderer();
-        imageAppIcon = new ImageIcon(MainFrame.class.getResource(pathToAppLogo));
+        imageAppIcon = new ImageIcon(MainFrame.class.getResource(Options.getOptionsValue("appLogo")));
         setIconImage(imageAppIcon.getImage());
         isActive = true;
 
@@ -106,7 +107,12 @@ public class MainFrame extends JFrame {
         tableNotes.setModel(new DefaultTableModel(
                 new Object[][]{},
                 new String[]{
-                        "ID", "Title", "Deadline", "Status", "Created", "End"
+                        Message.getText("tableID"),
+                        Message.getText("tableTitle"),
+                        Message.getText("tableDeadline"),
+                        Message.getText("tableStatus"),
+                        Message.getText("tableCreatedTime"),
+                        Message.getText("tableEndTime")
                 }
         ) {
             Class[] types = new Class[]{
@@ -155,7 +161,7 @@ public class MainFrame extends JFrame {
                         comboBoxSelectStatusForNote.setEnabled(true);
                         buttonEditForToolBar.setEnabled(true);
                         buttonDeleteForToolBar.setEnabled(true);
-                        DataBaseWorker.showMessage("Selected task with ID [" + tableNotes.getValueAt(row, 0) + "]");
+                        DataBaseWorker.showMessage(Message.getText("infoSelectedTask")+" [" + tableNotes.getValueAt(row, 0) + "]");
                     }
                 }
             }
@@ -164,17 +170,17 @@ public class MainFrame extends JFrame {
         mainToolBar.setBorder(null);
         mainToolBar.setRollover(true);
 
-        buttonAddForToolBar.setText("Add");
+        buttonAddForToolBar.setText(Message.getText("toolBarButtonAdd"));
 
         mainToolBar.add(buttonAddForToolBar);
         buttonAddForToolBar.setEnabled(false);
 
-        buttonEditForToolBar.setText("Edit");
+        buttonEditForToolBar.setText(Message.getText("toolBarButtonEdit"));
 
         mainToolBar.add(buttonEditForToolBar);
         buttonEditForToolBar.setEnabled(false);
 
-        buttonDeleteForToolBar.setText("Delete");
+        buttonDeleteForToolBar.setText(Message.getText("toolBarButtonDelete"));
 
         mainToolBar.add(buttonDeleteForToolBar);
         buttonDeleteForToolBar.setEnabled(false);
@@ -184,36 +190,38 @@ public class MainFrame extends JFrame {
         textAreaForViewCurrentNote.setMargin(new Insets(5, 5, 5, 5));
 
         labelForInfoAndMessages.setHorizontalAlignment(SwingConstants.CENTER);
-        labelForInfoAndMessages.setText("You need create or open existing database. [Menu > Create/Open database]");
+        labelForInfoAndMessages.setText(Message.getText("infoTipAtStartup"));
 
         panelForViewCurrentNote.setBorder(BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         labelNoteNameForViewCurrentNote.setHorizontalAlignment(SwingConstants.CENTER);
-        labelNoteNameForViewCurrentNote.setText("Choose task to view details.");
+        labelNoteNameForViewCurrentNote.setText(Message.getText("viewTitle"));
 
         textAreaForViewCurrentNote.setEditable(false);
         textAreaForViewCurrentNote.setColumns(20);
         textAreaForViewCurrentNote.setRows(5);
-        textAreaForViewCurrentNote.setText("Not chosen task to view.");
+        textAreaForViewCurrentNote.setText(Message.getText("viewText"));
         textAreaForViewCurrentNote.setBorder(null);
         scrollPaneForViewNote.setViewportView(textAreaForViewCurrentNote);
 
         panelForStatsAboutNote.setBorder(BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        labelStatusForStats.setText("Status:");
-        labelDeadlineForStats.setText("Deadline:");
-        labelCreatedForStats.setText("Created:");
-        labelEndForStats.setText("End:");
+        labelStatusForStats.setText(Message.getText("viewStatus"));
+        labelDeadlineForStats.setText(Message.getText("viewDeadline"));
+        labelCreatedForStats.setText(Message.getText("viewCreated"));
+        labelEndForStats.setText(Message.getText("viewEnd"));
         labelDeadlineDate.setText("Select task");
         labelCreatedDate.setText("Select task");
         labelEndDate.setText("Select task");
 
-        buttonChangeStatus.setText("Apply status");
+        buttonChangeStatus.setText(Message.getText("viewButtonApplyStatus"));
         buttonChangeStatus.setEnabled(false);
 
 
-        comboBoxSelectStatusForNote.setModel(new DefaultComboBoxModel<>(new String[]{"In work", "Done"}));
-        comboBoxSelectStatusForNote.setToolTipText("Select status for this task.");
+        comboBoxSelectStatusForNote.setModel(new DefaultComboBoxModel<>(new String[]{
+                Message.getText("viewComboBoxValueInWork"),
+                Message.getText("viewComboBoxValueDone")}));
+        comboBoxSelectStatusForNote.setToolTipText(Message.getText("viewComboBoxTip"));
 
         comboBoxSelectStatusForNote.setEnabled(false);
 
@@ -291,32 +299,32 @@ public class MainFrame extends JFrame {
                                 .addGap(10, 10, 10))
         );
 
-        menuMain.setText("Menu");
+        menuMain.setText(Message.getText("mainTitle"));
 
-        menuMainItemCreateDB.setText("Create database");
+        menuMainItemCreateDB.setText(Message.getText("mainItemCreateDB"));
 
         menuMain.add(menuMainItemCreateDB);
 
-        menuMainItemOpenDB.setText("Open database");
+        menuMainItemOpenDB.setText(Message.getText("mainItemOpenDB"));
 
         menuMain.add(menuMainItemOpenDB);
 
-        menuMainItemExit.setText("Exit");
+        menuMainItemExit.setText(Message.getText("mainItemExit"));
 
         menuMain.add(menuMainItemExit);
 
         menuBar.add(menuMain);
 
-        menuSettings.setText("Settings");
-        menuSettingsItemGeneral.setText("General");
+        menuSettings.setText(Message.getText("settingsTitle"));
+        menuSettingsItemGeneral.setText(Message.getText("settingsItemGeneral"));
 
         menuSettings.add(menuSettingsItemGeneral);
 
         menuBar.add(menuSettings);
 
-        menuHelp.setText("Help");
+        menuHelp.setText(Message.getText("helpTitle"));
 
-        menuHelpItemAbout.setText("About");
+        menuHelpItemAbout.setText(Message.getText("helpItemAbout"));
 
         menuHelp.add(menuHelpItemAbout);
 
@@ -339,6 +347,7 @@ public class MainFrame extends JFrame {
                                         .addComponent(scrollPaneForTableNotes, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 827, Short.MAX_VALUE))
                                 .addGap(5, 5, 5))
         );
+
         layout.setVerticalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
@@ -376,7 +385,7 @@ public class MainFrame extends JFrame {
 
     private void askAboutExit() {
         if (JOptionPane.showConfirmDialog(null,
-                "Are you sure you want to quit the application?", "You are leaving? :(",
+                Message.getText("exitConfirmText"), Message.getText("exitConfirmTitle"),
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
             System.exit(0);
@@ -422,14 +431,14 @@ public class MainFrame extends JFrame {
     private void actionMenuMainItemCreateDB() {
         String databaseName = JOptionPane.showInputDialog(
                 null,
-                "Choose name for new database:",
-                "Create database",
+                Message.getText("createDBText"),
+                Message.getText("createDBTitle"),
                 JOptionPane.INFORMATION_MESSAGE);
         if (databaseName != null && !databaseName.trim().isEmpty()) {
             DataBaseWorker.createDatabase(databaseName);
             buttonAddForToolBar.setEnabled(true);
         } else {
-            DataBaseWorker.showMessage("New database was not created. [CODE:V_MN_001]");
+            DataBaseWorker.showMessage(Message.getText("errorCreateDB"));
         }
     }
 

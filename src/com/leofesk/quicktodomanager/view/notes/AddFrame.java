@@ -1,6 +1,8 @@
 package com.leofesk.quicktodomanager.view.notes;
 
 import com.leofesk.quicktodomanager.controller.DataBaseWorker;
+import com.leofesk.quicktodomanager.controller.Message;
+import com.leofesk.quicktodomanager.model.Options;
 import com.leofesk.quicktodomanager.view.MainFrame;
 
 import javax.swing.*;
@@ -18,7 +20,6 @@ public class AddFrame extends JFrame {
     private JTextField textFieldDeadlineDate;
     private JTextField textFieldTaskName;
     private static ImageIcon imageAppIcon;
-    private String pathToAppLogo = "/img/AppLogo.png";
 
     public AddFrame() {
         initComponents();
@@ -33,10 +34,10 @@ public class AddFrame extends JFrame {
         labelDeadline = new JLabel();
         labelFormatDeadline = new JLabel();
         textFieldTaskName = new JTextField();
-        imageAppIcon = new ImageIcon(MainFrame.class.getResource(pathToAppLogo));
-        setIconImage(imageAppIcon.getImage());
+        imageAppIcon = new ImageIcon(AddFrame.class.getResource(Options.getOptionsValue("appLogo")));
 
-        setTitle(" Add new note");
+        setIconImage(imageAppIcon.getImage());
+        setTitle(Message.getText("frameAddTitle"));
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
 
@@ -47,12 +48,12 @@ public class AddFrame extends JFrame {
         scrollPaneForTextArea.setViewportView(textArea);
 
         buttonAdd.addActionListener(e -> actionButtonAdd());
-        buttonAdd.setText("ОК");
+        buttonAdd.setText(Message.getText("buttonAdd"));
 
-        labelTaskName.setText("Title:");
+        labelTaskName.setText(Message.getText("labelTaskTitle"));
         textFieldDeadlineDate.setText(DataBaseWorker.getNextDay());
-        labelDeadline.setText("Deadline:");
-        labelFormatDeadline.setText("Format: DD.MM.YYYY");
+        labelDeadline.setText(Message.getText("labelTaskDeadline"));
+        labelFormatDeadline.setText(Message.getText("labelDeadlineFormat"));
         textFieldTaskName.setText("");
 
         GroupLayout layout = new GroupLayout(getContentPane());
@@ -115,12 +116,12 @@ public class AddFrame extends JFrame {
         if (DataBaseWorker.isCorrectNote(textFieldTaskName.getText(), textArea.getText(), textFieldDeadlineDate.getText())) {
             DataBaseWorker.addNewNoteFromTable(textFieldTaskName.getText(), textArea.getText(), textFieldDeadlineDate.getText());
         } else {
-            DataBaseWorker.showMessage("New task was not created. Title, text and deadline can't be empty.");
+            DataBaseWorker.showMessage(Message.getText("errorButtonAdd"));
         }
 
         textFieldTaskName.setText("");
         textArea.setText("");
-        textFieldDeadlineDate.setText("01.01.2000");
+        textFieldDeadlineDate.setText(DataBaseWorker.getNextDay());
 
         dispose();
         MainFrame.setEnabledWindowElement(true);

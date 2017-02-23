@@ -1,6 +1,7 @@
 package com.leofesk.quicktodomanager.model;
 
 import com.leofesk.quicktodomanager.controller.DataBaseWorker;
+import com.leofesk.quicktodomanager.controller.Message;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -23,9 +24,9 @@ public class Database {
                     + Options.getOptionsValue("databaseName") + ".qtdm");
             statement = connection.createStatement();
         } catch (ClassNotFoundException e) {
-            DataBaseWorker.showMessage("Can't find database. [CODE:M_DB_001]");
+            DataBaseWorker.showMessage(Message.getText("databaseErrorConnectNotFound"));
         } catch (SQLException e) {
-            DataBaseWorker.showMessage("Can't connect to database. [CODE:M_DB_002]");
+            DataBaseWorker.showMessage(Message.getText("databaseErrorConnectSQL"));
         }
     }
 
@@ -35,13 +36,13 @@ public class Database {
             statement.execute(queriesList.getCreateTable());
 
         } catch (SQLException e) {
-            DataBaseWorker.showMessage("Can't create tables in database. [CODE:M_DB_003]");
+            DataBaseWorker.showMessage(Message.getText("databaseErrorCreateTableCatch"));
         } finally {
             try {
                 statement.close();
                 connection.close();
             } catch (SQLException e) {
-                DataBaseWorker.showMessage("Unexpected error: [CODE:M_DB_014]");
+                DataBaseWorker.showMessage(Message.getText("databaseErrorCreateTableFinally"));
             }
         }
     }
@@ -57,18 +58,18 @@ public class Database {
             pstmt.setString(2, text);
             pstmt.setString(3, deadline);
             pstmt.setString(4, getCurrentDate());
-            pstmt.setString(5, "Not done yet");
+            pstmt.setString(5, Message.getText("databaseEndField"));
             pstmt.setInt(6, 0);
 
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            DataBaseWorker.showMessage("Can't add task to database. [CODE:M_DB_004]");
+            DataBaseWorker.showMessage(Message.getText("databaseErrorAddNoteCatch"));
         } finally {
             try {
                 pstmt.close();
                 connection.close();
             } catch (SQLException e) {
-                DataBaseWorker.showMessage("Unexpected error: [CODE:M_DB_013]");
+                DataBaseWorker.showMessage(Message.getText("databaseErrorAddNoteFinally"));
             }
         }
     }
@@ -92,27 +93,15 @@ public class Database {
 
 
         } catch (SQLException e) {
-            DataBaseWorker.showMessage("Can't update task. [CODE:M_DB_005]");
+            DataBaseWorker.showMessage(Message.getText("databaseErrorUpdateCurrentCatch"));
         } finally {
             try {
                 pstmt.close();
                 connection.close();
             } catch (SQLException e) {
-                DataBaseWorker.showMessage("Unexpected error: [CODE:M_DB_012]");
+                DataBaseWorker.showMessage(Message.getText("databaseErrorUpdateCurrentFinally"));
             }
         }
-    }
-
-    private static String convertStatus(String status) {
-        if (status.equals("Done")) {
-            status = "1";
-        }
-
-        if (status.equals("In work")) {
-            status = "0";
-        }
-
-        return status;
     }
 
     public static void getAllNotesFromDatabase() {
@@ -129,16 +118,15 @@ public class Database {
                         resultSet.getString("end"),
                         resultSet.getString("status")));
             }
-
         } catch (SQLException e) {
-            DataBaseWorker.showMessage("Can't get data about all tasks from database. [CODE:M_DB_006]");
+            DataBaseWorker.showMessage(Message.getText("databaseErrorGetAllNotesCatch"));
         } finally {
             try {
                 resultSet.close();
                 statement.close();
                 connection.close();
             } catch (SQLException e) {
-                DataBaseWorker.showMessage("Unexpected error: [CODE:M_DB_011]");
+                DataBaseWorker.showMessage(Message.getText("databaseErrorGetAllNotesFinally"));
             }
         }
     }
@@ -149,13 +137,12 @@ public class Database {
             if (connection.isClosed()) {
                 connectToDatabase();
             }
+
             pstmt = connection.prepareStatement(queriesList.getCurrentNote());
-
             pstmt.setInt(1, id);
-
             resultSet = pstmt.getResultSet();
-
             resultSet = pstmt.executeQuery();
+
             currentNote = new Note(resultSet.getInt("id"),
                     resultSet.getString("title"),
                     resultSet.getString("text"),
@@ -164,16 +151,15 @@ public class Database {
                     resultSet.getString("end"),
                     resultSet.getString("status"));
             currentNote.setStatus(checkStatus(currentNote.getStatus()));
-
         } catch (SQLException e) {
-            DataBaseWorker.showMessage("Can't get data about task from database. [CODE:M_DB_007]");
+            DataBaseWorker.showMessage(Message.getText("databaseErrorGetCurrentNoteCatch"));
         } finally {
             try {
                 resultSet.close();
                 pstmt.close();
                 connection.close();
             } catch (SQLException e) {
-                DataBaseWorker.showMessage("Unexpected error: [CODE:M_DB_010]");
+                DataBaseWorker.showMessage(Message.getText("databaseErrorGetCurrentNoteFinally"));
             }
         }
         return currentNote;
@@ -184,29 +170,39 @@ public class Database {
             if (connection.isClosed()) {
                 connectToDatabase();
             }
-            pstmt = connection.prepareStatement(queriesList.getCurrentDeleteNote());
 
+            pstmt = connection.prepareStatement(queriesList.getCurrentDeleteNote());
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
 
-            DataBaseWorker.showMessage("Task was deleted successfully.");
+            DataBaseWorker.showMessage(Message.getText("databaseDeleteCurrentNoteInfo"));
         } catch (SQLException e) {
-            DataBaseWorker.showMessage("Can't delete task. [CODE:M_DB_008]");
+            DataBaseWorker.showMessage(Message.getText("databaseErrorDeleteCurrentNoteCatch"));
         } finally {
             try {
                 pstmt.close();
                 connection.close();
             } catch (SQLException e) {
-                DataBaseWorker.showMessage("Unexpected error: [CODE:M_DB_015]");
+                DataBaseWorker.showMessage(Message.getText("databaseErrorDeleteCurrentNoteFinally"));
             }
         }
     }
 
     public static String checkStatus(String status) {
         if (status.equals("0")) {
-            status = "In work";
+            status = Message.getText("statusInWork");
         } else {
-            status = "Done";
+            status = Message.getText("statusDone");
+        }
+        return status;
+    }
+
+    private static String convertStatus(String status) {
+        if (status.equals(Message.getText("statusDone"))) {
+            status = "1";
+        }
+        if (status.equals(Message.getText("statusInWork"))) {
+            status = "0";
         }
         return status;
     }
@@ -217,7 +213,7 @@ public class Database {
             Options.updateOptionsValue("databaseName", databaseName);
             createTablesInDatabase();
         } else {
-            DataBaseWorker.showMessage("Can't create database. [CODE:M_DB_009]");
+            DataBaseWorker.showMessage(Message.getText("databaseErrorCreateNewDB"));
         }
     }
 
