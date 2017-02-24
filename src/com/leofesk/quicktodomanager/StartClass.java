@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 public class StartClass {
     public static void main(String[] args) throws InterruptedException {
+        Options.initOptionsFile();
         try {
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
                 if ("GTK+".equals(info.getName())) {
@@ -20,10 +21,6 @@ public class StartClass {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         EventQueue.invokeLater(() -> new MainFrame().setVisible(true));
-
-        Thread.sleep(2000); // It is necessary to delay the loading of the configuration file.
-        Options.initOptionsFile();
     }
 }

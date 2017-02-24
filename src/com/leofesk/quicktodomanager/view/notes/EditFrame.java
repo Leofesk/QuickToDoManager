@@ -1,55 +1,60 @@
-package com.leofesk.quicktodomanager.view;
+package com.leofesk.quicktodomanager.view.notes;
 
 import com.leofesk.quicktodomanager.controller.DataBaseWorker;
+import com.leofesk.quicktodomanager.controller.Message;
+import com.leofesk.quicktodomanager.model.Options;
+import com.leofesk.quicktodomanager.view.MainFrame;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-public class NoteAddFrame extends JFrame {
-    private JButton buttonAdd;
+public class EditFrame extends JFrame {
+    private JButton buttonEdit;
     private JLabel labelTaskName;
     private JLabel labelDeadline;
     private JLabel labelFormatDeadline;
     private JScrollPane scrollPaneForTextArea;
-    private JTextArea textArea;
-    private JTextField textFieldDeadlineDate;
-    private JTextField textFieldTaskName;
+    private static JTextArea textArea;
+    private static JTextField textFieldDeadlineDate;
+    private static JTextField textFieldTaskName;
     private static ImageIcon imageAppIcon;
-    private String pathToAppLogo = "/img/AppLogo.png";
 
-    public NoteAddFrame() {
+    public EditFrame() {
         initComponents();
     }
 
     private void initComponents() {
         scrollPaneForTextArea = new JScrollPane();
         textArea = new JTextArea();
-        buttonAdd = new JButton();
+        buttonEdit = new JButton();
         labelTaskName = new JLabel();
         textFieldDeadlineDate = new JTextField();
         labelDeadline = new JLabel();
         labelFormatDeadline = new JLabel();
         textFieldTaskName = new JTextField();
-        imageAppIcon = new ImageIcon(MainFrame.class.getResource(pathToAppLogo));
-        setIconImage(imageAppIcon.getImage());
+        imageAppIcon = new ImageIcon(EditFrame.class.getResource(Options.getOptionsValue("appLogo")));
 
-        setTitle(" Add new note");
+        setIconImage(imageAppIcon.getImage());
+        setTitle(Message.getText("frameEditTitle"));
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
 
         textArea.setColumns(20);
         textArea.setRows(5);
+        textArea.setWrapStyleWord(true);
         textArea.setLineWrap(true);
         textArea.setMargin(new Insets(5, 5, 5, 5));
         scrollPaneForTextArea.setViewportView(textArea);
 
-        buttonAdd.addActionListener(e -> actionButtonAdd());
-        buttonAdd.setText("ОК");
+        buttonEdit.addActionListener(e -> actionButtonEdit());
+        buttonEdit.setText(Message.getText("buttonEdit"));
 
-        labelTaskName.setText("Title:");
-        textFieldDeadlineDate.setText("11.08.1992");
-        labelDeadline.setText("Deadline:");
-        labelFormatDeadline.setText("Format: DD.MM.YYYY");
+        labelTaskName.setText(Message.getText("labelTaskTitle"));
+        textFieldDeadlineDate.setText(DataBaseWorker.getNextDay());
+        labelDeadline.setText(Message.getText("labelTaskDeadline"));
+        labelFormatDeadline.setText(Message.getText("labelDeadlineFormat"));
         textFieldTaskName.setText("");
 
         GroupLayout layout = new GroupLayout(getContentPane());
@@ -71,11 +76,11 @@ public class NoteAddFrame extends JFrame {
                                                         .addGroup(layout.createSequentialGroup()
                                                                 .addComponent(labelDeadline)
                                                                 .addGap(10, 10, 10)
-                                                                .addComponent(textFieldDeadlineDate, GroupLayout.PREFERRED_SIZE, 84, GroupLayout.PREFERRED_SIZE)
+                                                                .addComponent(textFieldDeadlineDate, GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                                 .addGap(10, 10, 10)
                                                                 .addComponent(labelFormatDeadline, GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
                                                                 .addGap(10, 10, 10)
-                                                                .addComponent(buttonAdd, GroupLayout.PREFERRED_SIZE, 131, GroupLayout.PREFERRED_SIZE)))))
+                                                                .addComponent(buttonEdit, GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                                 .addGap(10, 10, 10))
         );
 
@@ -92,26 +97,41 @@ public class NoteAddFrame extends JFrame {
                                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(labelDeadline, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
                                         .addComponent(textFieldDeadlineDate, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(buttonAdd)
+                                        .addComponent(buttonEdit)
                                         .addComponent(labelFormatDeadline, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE))
                                 .addGap(10, 10, 10))
         );
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                MainFrame.setEnabledWindowElement(true);
+            }
+        });
 
         pack();
         setLocationRelativeTo(null);
     }
 
-    private void actionButtonAdd() {
+    private void actionButtonEdit() {
         if (DataBaseWorker.isCorrectNote(textFieldTaskName.getText(), textArea.getText(), textFieldDeadlineDate.getText())) {
-            DataBaseWorker.addNewNoteFromTable(textFieldTaskName.getText(), textArea.getText(), textFieldDeadlineDate.getText());
+            DataBaseWorker.editNoteFromTable(textFieldTaskName.getText(), textArea.getText(), textFieldDeadlineDate.getText());
         } else {
-            DataBaseWorker.showMessage("New task was not created. Title, text and deadline can't be empty.");
+            DataBaseWorker.showMessage(Message.getText("errorButtonEdit"));
         }
-
-        textFieldTaskName.setText("");
-        textArea.setText("");
-        textFieldDeadlineDate.setText("01.01.2000");
-
         dispose();
+        MainFrame.setEnabledWindowElement(true);
+    }
+
+    public static void setTextArea(String text) {
+        textArea.setText(text);
+    }
+
+    public static void setTextFieldDeadlineDate(String deadline) {
+        textFieldDeadlineDate.setText(deadline);
+    }
+
+    public static void setTextFieldTaskName(String title) {
+        textFieldTaskName.setText(title);
     }
 }

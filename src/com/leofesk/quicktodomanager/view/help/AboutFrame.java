@@ -1,16 +1,20 @@
-package com.leofesk.quicktodomanager.view;
+package com.leofesk.quicktodomanager.view.help;
 
 import com.leofesk.quicktodomanager.controller.DataBaseWorker;
+import com.leofesk.quicktodomanager.controller.Message;
+import com.leofesk.quicktodomanager.model.Options;
+import com.leofesk.quicktodomanager.view.MainFrame;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class AboutFrame extends JFrame {
     private JLabel labelForAboutVersion;
     private JScrollPane jScrollPane1;
     private static JTextArea textAreaForAboutText;
     private static ImageIcon imageAppIcon;
-    private String pathToAppLogo = "/img/AppLogo.png";
 
     public AboutFrame() {
         initComponents();
@@ -20,15 +24,15 @@ public class AboutFrame extends JFrame {
         labelForAboutVersion = new JLabel();
         jScrollPane1 = new JScrollPane();
         textAreaForAboutText = new JTextArea();
-        imageAppIcon = new ImageIcon(MainFrame.class.getResource(pathToAppLogo));
+        imageAppIcon = new ImageIcon(AboutFrame.class.getResource(Options.getOptionsValue("appLogo")));
         setIconImage(imageAppIcon.getImage());
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(" About");
+        setTitle(Message.getText("frameAboutTitle"));
         setResizable(false);
 
         labelForAboutVersion.setHorizontalAlignment(SwingConstants.CENTER);
-        labelForAboutVersion.setText("Quick To Do Manager | Version: 1.1.6");
+        labelForAboutVersion.setText(getTitleForLabel());
 
         textAreaForAboutText.setEditable(false);
         textAreaForAboutText.setColumns(20);
@@ -60,10 +64,21 @@ public class AboutFrame extends JFrame {
                                 .addGap(10, 10, 10))
         );
 
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                MainFrame.setEnabledWindowElement(true);
+            }
+        });
+
         pack();
         setLocationRelativeTo(null);
 
         loadAboutText();
+    }
+
+    private String getTitleForLabel() {
+        return Message.getText("aboutBlockTitle")+" " + Options.getOptionsValue("version");
     }
 
     private void loadAboutText() {
