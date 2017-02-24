@@ -210,9 +210,9 @@ public class MainFrame extends JFrame {
         labelDeadlineForStats.setText(Message.getText("viewDeadline"));
         labelCreatedForStats.setText(Message.getText("viewCreated"));
         labelEndForStats.setText(Message.getText("viewEnd"));
-        labelDeadlineDate.setText("Select task");
-        labelCreatedDate.setText("Select task");
-        labelEndDate.setText("Select task");
+        labelDeadlineDate.setText(Message.getText("clearViewNoteDeadline"));
+        labelCreatedDate.setText(Message.getText("clearViewNoteCreated"));
+        labelEndDate.setText(Message.getText("clearViewNoteEnd"));
 
         buttonChangeStatus.setText(Message.getText("viewButtonApplyStatus"));
         buttonChangeStatus.setEnabled(false);
@@ -462,6 +462,7 @@ public class MainFrame extends JFrame {
 
     private void actionButtonChangeStatus() {
         String value = comboBoxSelectStatusForNote.getSelectedItem().toString();
+        System.out.println(value);
         DataBaseWorker.changeStatusToCurrentNote(value);
         DataBaseWorker.showSelectedNoteInfo(DataBaseWorker.getCurrentNoteID());
     }

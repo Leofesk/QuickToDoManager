@@ -90,8 +90,6 @@ public class Database {
             pstmt.setInt(7, id);
 
             pstmt.executeUpdate();
-
-
         } catch (SQLException e) {
             DataBaseWorker.showMessage(Message.getText("databaseErrorUpdateCurrentCatch"));
         } finally {
@@ -191,7 +189,8 @@ public class Database {
     public static String checkStatus(String status) {
         if (status.equals("0")) {
             status = Message.getText("statusInWork");
-        } else {
+        }
+        if (status.equals("1")) {
             status = Message.getText("statusDone");
         }
         return status;

@@ -1,5 +1,6 @@
 <b>Programming Language:</b> Java <br>
-<b>Platforms:</b> Windows / Linux<br>
+<b>Platforms:</b> Windows / Linux <br>
+<b>Language:</b> English / Russian <br>
 <b>Project:</b> QTDM - Quick To Do Manager <br>
 <b>Description:</b> This application helps you collect all yours everyday tasks in one table. Simple and comfortable way to managing your tasks. <br> 
 <b>Author:</b> Leofesk <br>

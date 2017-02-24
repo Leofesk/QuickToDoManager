@@ -7,7 +7,6 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -22,7 +21,6 @@ public class Options {
     private static Path path = null;
     private static String lang;
     private static String country;
-    private static Locale locale;
     private static ResourceBundle langPack;
 
     public static void initOptionsFile() {
@@ -96,7 +94,7 @@ public class Options {
             options.setProperty("version", "1.1.6");
             options.setProperty("appLogo", "/img/AppLogo.png");
             output = new FileOutputStream(currentOptionsFilePath);
-            options.store(output, Message.getText("optionsConfigStoreDefaultComment"));
+            options.store(output, "QTDM - Default options file.");
             initLanguageProperties();
         } catch (IOException e) {
             DataBaseWorker.showMessage(Message.getText("optionsCreateNewFileCatch"));
@@ -112,10 +110,7 @@ public class Options {
     }
 
     private static void initLanguageProperties() {
-        lang = options.getProperty("language");
-        country = options.getProperty("country");
-        locale = new Locale(lang, country);
-        langPack = ResourceBundle.getBundle("lang/lang", locale);
+        langPack = ResourceBundle.getBundle("lang/lang", new UTF8Control());
     }
 
     public static void updateOptionsValue(String key, String value) {
@@ -123,7 +118,7 @@ public class Options {
             options.load(new FileReader(currentOptionsFilePath));
             options.setProperty(key, value);
             output = new FileOutputStream(currentOptionsFilePath);
-            options.store(output, Message.getText("optionsConfigStoreUpdatedComment"));
+            options.store(output, "QTDM - Updated options file.");
         } catch (IOException e) {
             DataBaseWorker.showMessage(Message.getText("optionsUpdateValueCatch"));
         } finally {
@@ -166,6 +161,14 @@ public class Options {
 
     public static String getTextByLang(String key) {
         return langPack.getString(key);
+    }
+
+    public static String getLang() {
+        return lang = options.getProperty("language");
+    }
+
+    public static String getCountry() {
+        return country = options.getProperty("country");
     }
 
     public static String getOptionsValue(String key) {

@@ -19,6 +19,11 @@ import java.util.Date;
 
 import static com.leofesk.quicktodomanager.model.Database.checkStatus;
 
+/**
+ * Basic controller class, all function blocks program was here.
+ * In future this class be splitted.
+ */
+
 public class DataBaseWorker {
     private static int currentNoteID;
     private static Note note;
@@ -54,6 +59,8 @@ public class DataBaseWorker {
             String tempSelectedFilePath = chooseDB.getSelectedFile().getAbsolutePath();
             tempSelectedFilePath = tempSelectedFilePath.substring(0, tempSelectedFilePath.lastIndexOf(File.separator));
 
+            // Checking which OS used and add correct for current OS path.
+
             if (Options.getOptionsValue("currentOS").equals("Windows")) {
                 tempSelectedFilePath = tempSelectedFilePath + "\\";
             }
@@ -80,12 +87,12 @@ public class DataBaseWorker {
 
     public static void openAbout() {
         try {
-            String tempPath = "about_en_US";
+            String tempPath = "about_en_US"; // This is default "About";
             if (Options.getOptionsValue("language").equals("ru")) {
                 tempPath = "about_ru_RU";
             }
             InputStream inputStream = DataBaseWorker.class.getResourceAsStream("/help/about/" + tempPath + ".txt");
-            InputStreamReader inputReader = new InputStreamReader(inputStream);
+            InputStreamReader inputReader = new InputStreamReader(inputStream, "UTF-8");
             BufferedReader reader = new BufferedReader(inputReader);
 
             String temp;
@@ -141,7 +148,7 @@ public class DataBaseWorker {
     }
 
     public static void changeStatusToCurrentNote(String value) {
-        if (value.equals("Done")) {
+        if (value.equals(Message.getText("statusDone"))) {
             Database.updateCurrentNoteFromDatabase(currentNoteID, note.getTitle(),
                     note.getText(), note.getDeadline(),
                     note.getCreatedTime(), Database.getCurrentDate(), "1");
@@ -155,7 +162,7 @@ public class DataBaseWorker {
     }
 
     public static void showMessage(String message) {
-        MainFrame.setLabelForInfoAndMessages(Message.getText("labelInfo") + message);
+        MainFrame.setLabelForInfoAndMessages(Message.getText("labelInfo") + " "+ message);
     }
 
     public static void addNewNoteFromTable(String title, String text, String deadline) {
@@ -180,6 +187,7 @@ public class DataBaseWorker {
         }
     }
 
+    // Checking correct date input.
     private static boolean isDate(String deadline) {
         String s[];
         int day;
@@ -241,6 +249,7 @@ public class DataBaseWorker {
         return nextDay;
     }
 
+    // Restore default value to view block, if not active task.
     public static void clearViewBlock() {
         MainFrame.setLabelNoteNameForViewCurrentNote(Message.getText("clearViewNoteTitle"));
         MainFrame.setLabelCreatedDate(Message.getText("clearViewNoteCreated"));

@@ -6,5 +6,4 @@ public class Message {
     public static String getText(String key) {
         return Options.getTextByLang(key);
     }
-
 }
