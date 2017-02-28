@@ -43,11 +43,35 @@ public class Note {
         return status;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public void setStatus(String status) {
         this.status = status;
     }
 
-    public int getId() {
-        return id;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setDeadline(String deadline) {
+        this.deadline = deadline;
+    }
+
+    public void setCreatedTime(String createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 }

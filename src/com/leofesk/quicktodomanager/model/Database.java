@@ -58,7 +58,7 @@ public class Database {
             pstmt.setString(2, text);
             pstmt.setString(3, deadline);
             pstmt.setString(4, getCurrentDate());
-            pstmt.setString(5, Message.getText("databaseEndField"));
+            pstmt.setString(5, "0");
             pstmt.setInt(6, 0);
 
             pstmt.executeUpdate();
@@ -148,7 +148,6 @@ public class Database {
                     resultSet.getString("created"),
                     resultSet.getString("end"),
                     resultSet.getString("status"));
-            currentNote.setStatus(checkStatus(currentNote.getStatus()));
         } catch (SQLException e) {
             DataBaseWorker.showMessage(Message.getText("databaseErrorGetCurrentNoteCatch"));
         } finally {

@@ -7,10 +7,12 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class Options {
+    private static final String currentAppVersion = "1.9.13";
     private static String defaultOptionsFilePathWindows = "C:\\Users\\" + getUsername() + "\\AppData\\Roaming\\Leofesk.Ru\\QuickToDoManager\\options\\config.properties";
     private static String defaultDatabasePathWindows = "C:\\Users\\" + getUsername() + "\\Documents\\QuickToDoManager\\db\\";
     private static String defaultOptionsFilePathLinux = getUserCurrentDir() + "/QuickToDoManager/options/config.properties";
@@ -57,9 +59,16 @@ public class Options {
     private static void loadExistingOptionsFile() {
         try {
             options.load(new FileReader(currentOptionsFilePath));
+            // Check for matching version of the application settings and settings for user;
+            if (!getOptionsValue("version").equals(currentAppVersion)) {
+                updateToNewVersion(options);
+                options.load(new FileReader(currentOptionsFilePath));
+            }
             initLanguageProperties();
         } catch (IOException e) {
             DataBaseWorker.showMessage(Message.getText("optionsLoadExistingFile"));
+        } catch (NullPointerException npe) {
+            createNewOptionsFile();
         }
     }
 
@@ -78,25 +87,54 @@ public class Options {
         return tempTitle;
     }
 
+    private static Properties setupOptions(Properties properties) {
+        properties.setProperty("currentOS", identifyOS());
+        if (identifyOS().equals("Windows")) {
+            properties.setProperty("defaultDatabaseFilePath", defaultDatabasePathWindows);
+            properties.setProperty("customDatabasePath", defaultDatabasePathWindows);
+        } else {
+            properties.setProperty("defaultDatabaseFilePath", defaultDatabasePathLinux);
+            properties.setProperty("customDatabasePath", defaultDatabasePathLinux);
+        }
+        properties.setProperty("databaseName", "notes");
+        properties.setProperty("language", "en");
+        properties.setProperty("country", "US");
+        properties.setProperty("version", currentAppVersion);
+        properties.setProperty("appLogo", "/img/AppLogo.png");
+        return properties;
+    }
+
     private static void createNewOptionsFile() {
         try {
-            options.setProperty("currentOS", identifyOS());
-            if (identifyOS().equals("Windows")) {
-                options.setProperty("defaultDatabaseFilePath", defaultDatabasePathWindows);
-                options.setProperty("customDatabasePath", defaultDatabasePathWindows);
-            } else {
-                options.setProperty("defaultDatabaseFilePath", defaultDatabasePathLinux);
-                options.setProperty("customDatabasePath", defaultDatabasePathLinux);
-            }
-            options.setProperty("databaseName", "notes");
-            options.setProperty("language", "en");
-            options.setProperty("country", "US");
-            options.setProperty("version", "1.1.6");
-            options.setProperty("appLogo", "/img/AppLogo.png");
+            setupOptions(options);
             output = new FileOutputStream(currentOptionsFilePath);
             options.store(output, "QTDM - Default options file.");
             initLanguageProperties();
         } catch (IOException e) {
+            DataBaseWorker.showMessage(Message.getText("optionsCreateNewFileCatch"));
+        } finally {
+            if (output != null) {
+                try {
+                    output.close();
+                } catch (IOException ex) {
+                    DataBaseWorker.showMessage(Message.getText("optionsCreateNewFileFinally"));
+                }
+            }
+        }
+    }
+
+    private static void updateToNewVersion(Properties oldProperties) {
+        try {
+            Properties tempProp = new Properties();
+            tempProp = setupOptions(tempProp);
+            for (Map.Entry<Object, Object> oldOptions : oldProperties.entrySet()) {
+                System.out.println("KEY: " + oldOptions.getKey() + " | VALUE: " + oldOptions.getValue());
+                tempProp.setProperty((String) oldOptions.getKey(), (String) oldOptions.getValue());
+            }
+            tempProp.setProperty("version", currentAppVersion);
+            output = new FileOutputStream(currentOptionsFilePath);
+            tempProp.store(output, "QTDM - Default options file.");
+        } catch (Exception e) {
             DataBaseWorker.showMessage(Message.getText("optionsCreateNewFileCatch"));
         } finally {
             if (output != null) {

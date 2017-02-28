@@ -104,12 +104,6 @@ public class GeneralFrame extends JFrame {
         buttonSave.addActionListener(e -> actionButtonSave());
         buttonCancel.addActionListener(e -> actionButtonCancel());
         comboBoxListOfLang.addActionListener(evt -> actionComboBoxListOfLang());
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                MainFrame.setEnabledWindowElement(true);
-            }
-        });
 
         pack();
         setLocationRelativeTo(null);
@@ -117,7 +111,6 @@ public class GeneralFrame extends JFrame {
 
     private void actionButtonCancel() {
         dispose();
-        MainFrame.setEnabledWindowElement(true);
     }
 
     private void actionButtonSave() {

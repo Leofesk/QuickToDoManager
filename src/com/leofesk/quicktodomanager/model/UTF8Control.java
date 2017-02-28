@@ -12,6 +12,7 @@ import java.util.ResourceBundle;
 /**
  * This class is required for proper character conversion.
  * Replacing the standard method of conversion using "native2ascii".
+ * P.S. Thanks "StackOverflow" for this solution! :)
  */
 
 public class UTF8Control extends ResourceBundle.Control {
@@ -38,7 +39,6 @@ public class UTF8Control extends ResourceBundle.Control {
         }
         if (stream != null) {
             try {
-                // Only this line is changed to make it to read properties files as UTF-8.
                 bundle = new PropertyResourceBundle(new InputStreamReader(stream, "UTF-8"));
             } finally {
                 stream.close();

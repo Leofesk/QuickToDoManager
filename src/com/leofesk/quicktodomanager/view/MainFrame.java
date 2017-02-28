@@ -158,10 +158,11 @@ public class MainFrame extends JFrame {
                     int col = tableNotes.columnAtPoint(evt.getPoint());
                     if (row >= 0 && col >= 0) {
                         DataBaseWorker.showSelectedNoteInfo((int) tableNotes.getValueAt(row, 0));
+                        setComboBoxSelectedItem();
                         comboBoxSelectStatusForNote.setEnabled(true);
                         buttonEditForToolBar.setEnabled(true);
                         buttonDeleteForToolBar.setEnabled(true);
-                        DataBaseWorker.showMessage(Message.getText("infoSelectedTask")+" [" + tableNotes.getValueAt(row, 0) + "]");
+                        DataBaseWorker.showMessage(Message.getText("infoSelectedTask") + " [" + tableNotes.getValueAt(row, 0) + "]");
                     }
                 }
             }
@@ -171,19 +172,19 @@ public class MainFrame extends JFrame {
         mainToolBar.setRollover(true);
 
         buttonAddForToolBar.setText(Message.getText("toolBarButtonAdd"));
-
         mainToolBar.add(buttonAddForToolBar);
+
         buttonAddForToolBar.setEnabled(false);
 
         buttonEditForToolBar.setText(Message.getText("toolBarButtonEdit"));
-
         mainToolBar.add(buttonEditForToolBar);
+
         buttonEditForToolBar.setEnabled(false);
 
         buttonDeleteForToolBar.setText(Message.getText("toolBarButtonDelete"));
-
         mainToolBar.add(buttonDeleteForToolBar);
         buttonDeleteForToolBar.setEnabled(false);
+
 
         textAreaForViewCurrentNote.setWrapStyleWord(true);
         textAreaForViewCurrentNote.setLineWrap(true);
@@ -206,6 +207,10 @@ public class MainFrame extends JFrame {
 
         panelForStatsAboutNote.setBorder(BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
+        labelDeadlineDate.setHorizontalAlignment(SwingConstants.CENTER);
+        labelCreatedDate.setHorizontalAlignment(SwingConstants.CENTER);
+        labelEndDate.setHorizontalAlignment(SwingConstants.CENTER);
+
         labelStatusForStats.setText(Message.getText("viewStatus"));
         labelDeadlineForStats.setText(Message.getText("viewDeadline"));
         labelCreatedForStats.setText(Message.getText("viewCreated"));
@@ -213,6 +218,7 @@ public class MainFrame extends JFrame {
         labelDeadlineDate.setText(Message.getText("clearViewNoteDeadline"));
         labelCreatedDate.setText(Message.getText("clearViewNoteCreated"));
         labelEndDate.setText(Message.getText("clearViewNoteEnd"));
+
 
         buttonChangeStatus.setText(Message.getText("viewButtonApplyStatus"));
         buttonChangeStatus.setEnabled(false);
@@ -408,7 +414,6 @@ public class MainFrame extends JFrame {
     private void actionMenuSettingsItemGeneral() {
         generalFrame.dispose();
         generalFrame.setVisible(true);
-        setEnabledWindowElement(false);
     }
 
     private void actionButtonEditForToolBar() {
@@ -423,7 +428,7 @@ public class MainFrame extends JFrame {
         buttonEditForToolBar.setEnabled(false);
         buttonDeleteForToolBar.setEnabled(false);
         DataBaseWorker.clearViewBlock();
-        comboBoxSelectStatusForNote.setSelectedItem("In work");
+        comboBoxSelectStatusForNote.setSelectedItem(Message.getText("statusInWork"));
         comboBoxSelectStatusForNote.setEnabled(false);
         buttonChangeStatus.setEnabled(false);
     }
@@ -462,7 +467,6 @@ public class MainFrame extends JFrame {
 
     private void actionButtonChangeStatus() {
         String value = comboBoxSelectStatusForNote.getSelectedItem().toString();
-        System.out.println(value);
         DataBaseWorker.changeStatusToCurrentNote(value);
         DataBaseWorker.showSelectedNoteInfo(DataBaseWorker.getCurrentNoteID());
     }
@@ -470,12 +474,14 @@ public class MainFrame extends JFrame {
     private void actionMenuHelpItemAbout() {
         aboutFrame.dispose();
         aboutFrame.setVisible(true);
-        setEnabledWindowElement(false);
-
     }
 
     public static void changeEnabledForToolbarAddButton(boolean enabled) {
         buttonAddForToolBar.setEnabled(enabled);
+    }
+
+    public static void setComboBoxSelectedItem() {
+        comboBoxSelectStatusForNote.setSelectedIndex(Integer.parseInt(DataBaseWorker.getNoteStatus()));
     }
 
     public static void setLabelForInfoAndMessages(String message) {

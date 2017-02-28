@@ -64,13 +64,6 @@ public class AboutFrame extends JFrame {
                                 .addGap(10, 10, 10))
         );
 
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                MainFrame.setEnabledWindowElement(true);
-            }
-        });
-
         pack();
         setLocationRelativeTo(null);
 
