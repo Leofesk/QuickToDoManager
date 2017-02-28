@@ -114,11 +114,30 @@ public class EditFrame extends JFrame {
     }
 
     private void actionButtonEdit() {
+        if (DataBaseWorker.checkStatusForCurrentNote()) {
+            editNote();
+        } else {
+            if (JOptionPane.showConfirmDialog(null,
+                    Message.getText("editNoteConfirmText"),
+                    Message.getText("editNoteConfirmTitle"),
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                editNote();
+            }
+            closeWindow();
+        }
+    }
+
+    private void editNote() {
         if (DataBaseWorker.isCorrectNote(textFieldTaskName.getText(), textArea.getText(), textFieldDeadlineDate.getText())) {
             DataBaseWorker.editNoteFromTable(textFieldTaskName.getText(), textArea.getText(), textFieldDeadlineDate.getText());
         } else {
             DataBaseWorker.showMessage(Message.getText("errorButtonEdit"));
         }
+        closeWindow();
+    }
+
+    private void closeWindow() {
         dispose();
         MainFrame.setEnabledWindowElement(true);
     }

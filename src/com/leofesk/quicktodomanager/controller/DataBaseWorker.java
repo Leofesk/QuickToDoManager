@@ -11,6 +11,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.xml.crypto.Data;
 import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -81,6 +82,9 @@ public class DataBaseWorker {
         model.setRowCount(0);
         for (Note note : Database.getNotes()) {
             note.setStatus(checkStatus(note.getStatus()));
+            if (note.getEndTime().equals("0")) {
+                note.setEndTime(Message.getText("databaseEndField"));
+            }
             model.addRow(new Object[]{note.getId(), note.getTitle(), note.getDeadline(), note.getStatus(), note.getCreatedTime(), note.getEndTime()});
         }
     }
@@ -143,8 +147,12 @@ public class DataBaseWorker {
         MainFrame.setLabelNoteNameForViewCurrentNote(note.getTitle());
         MainFrame.setLabelCreatedDate(note.getCreatedTime());
         MainFrame.setLabelDeadlineDate(note.getDeadline());
+        if (note.getEndTime().equals("0")) {
+            note.setEndTime(Message.getText("databaseEndField"));
+        }
         MainFrame.setLabelEndDate(note.getEndTime());
         MainFrame.setTextAreaForViewCurrentNote(note.getText());
+        MainFrame.setComboBoxSelectedItem();
     }
 
     public static void changeStatusToCurrentNote(String value) {
@@ -155,14 +163,14 @@ public class DataBaseWorker {
         } else {
             Database.updateCurrentNoteFromDatabase(currentNoteID, note.getTitle(),
                     note.getText(), note.getDeadline(),
-                    note.getCreatedTime(), Message.getText("databaseEndField"), "0");
+                    note.getCreatedTime(), "0", "0");
         }
         updateTableData();
         showMessage(Message.getText("dbwChangeStatusNoteSuccess"));
     }
 
     public static void showMessage(String message) {
-        MainFrame.setLabelForInfoAndMessages(Message.getText("labelInfo") + " "+ message);
+        MainFrame.setLabelForInfoAndMessages(Message.getText("labelInfo") + " " + message);
     }
 
     public static void addNewNoteFromTable(String title, String text, String deadline) {
@@ -179,8 +187,9 @@ public class DataBaseWorker {
         if (isDate(deadline)) {
             Database.updateCurrentNoteFromDatabase(currentNoteID, title, text,
                     deadline, note.getCreatedTime(),
-                    note.getEndTime(), note.getStatus());
+                    "0", "0");
             updateTableData();
+            showSelectedNoteInfo(currentNoteID);
             DataBaseWorker.showMessage(Message.getText("task") + " [" + title + "] " + Message.getText("dbwUpdatedSuccess"));
         } else {
             MainFrame.setLabelForInfoAndMessages(Message.getText("dbwNotCorrectFormat"));
@@ -203,7 +212,7 @@ public class DataBaseWorker {
             return false;
         }
 
-        if (!(day <= 31 && day > 0) || !(month <= 12 && month >= 1) || !(year <= 2050 && year >= 1950)) {
+        if (!(day <= 31 && day > 0) || !(month <= 12 && month >= 1) || !(year <= 3000 && year >= 2000)) {
             return false;
         }
         return true;
@@ -230,6 +239,16 @@ public class DataBaseWorker {
                 deadlineDateText != null && !deadlineDateText.trim().isEmpty()) {
         } else {
             return false;
+        }
+        return true;
+    }
+
+    public static boolean isDuplicate(String text) {
+        Database.getAllNotesFromDatabase();
+        for (Note note : Database.getNotes()) {
+            if (note.getTitle().equals(text)) {
+                return false;
+            }
         }
         return true;
     }
@@ -266,6 +285,19 @@ public class DataBaseWorker {
         if (tempChoosingLang.equals(Message.getText("chooseLangRussian"))) {
             Options.setLang("ru");
             Options.setCountry("RU");
+        }
+    }
+
+    public static String getNoteStatus() {
+        return note.getStatus();
+    }
+
+    public static boolean checkStatusForCurrentNote() {
+        System.out.println(note.getEndTime());
+        if (!isDate(note.getEndTime())) {
+            return true;
+        } else {
+            return false;
         }
     }
 }

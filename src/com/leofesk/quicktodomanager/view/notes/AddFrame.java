@@ -104,7 +104,7 @@ public class AddFrame extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                MainFrame.setEnabledWindowElement(true);
+                closeFrame();
             }
         });
 
@@ -114,16 +114,23 @@ public class AddFrame extends JFrame {
 
     private void actionButtonAdd() {
         if (DataBaseWorker.isCorrectNote(textFieldTaskName.getText(), textArea.getText(), textFieldDeadlineDate.getText())) {
-            DataBaseWorker.addNewNoteFromTable(textFieldTaskName.getText(), textArea.getText(), textFieldDeadlineDate.getText());
+            if(!DataBaseWorker.isDuplicate(textFieldTaskName.getText())) {
+                JOptionPane.showMessageDialog(null,Message.getText("errorDuplicateNoteText"), Message.getText("errorDuplicateNoteTitle"), JOptionPane.ERROR_MESSAGE);
+            } else {
+                DataBaseWorker.addNewNoteFromTable(textFieldTaskName.getText(), textArea.getText(), textFieldDeadlineDate.getText());
+                closeFrame();
+            }
         } else {
             DataBaseWorker.showMessage(Message.getText("errorButtonAdd"));
+            closeFrame();
         }
+    }
 
+    private void closeFrame() {
+        dispose();
         textFieldTaskName.setText("");
         textArea.setText("");
         textFieldDeadlineDate.setText(DataBaseWorker.getNextDay());
-
-        dispose();
         MainFrame.setEnabledWindowElement(true);
     }
 }
