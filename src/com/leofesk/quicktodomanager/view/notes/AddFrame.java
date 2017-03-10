@@ -121,8 +121,7 @@ public class AddFrame extends JFrame {
                 closeFrame();
             }
         } else {
-            DataBaseWorker.showMessage(Message.getText("errorButtonAdd"));
-            closeFrame();
+            JOptionPane.showMessageDialog(null, Message.getText("errorButtonAddText"), Message.getText("errorButtonAddTitle"), JOptionPane.ERROR_MESSAGE);
         }
     }
 

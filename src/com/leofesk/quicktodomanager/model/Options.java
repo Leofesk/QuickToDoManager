@@ -12,7 +12,7 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class Options {
-    private static final String currentAppVersion = "1.9.13";
+    private static final String currentAppVersion = "1.12.15";
     private static String defaultOptionsFilePathWindows = "C:\\Users\\" + getUsername() + "\\AppData\\Roaming\\Leofesk.Ru\\QuickToDoManager\\options\\config.properties";
     private static String defaultDatabasePathWindows = "C:\\Users\\" + getUsername() + "\\Documents\\QuickToDoManager\\db\\";
     private static String defaultOptionsFilePathLinux = getUserCurrentDir() + "/QuickToDoManager/options/config.properties";
@@ -128,7 +128,6 @@ public class Options {
             Properties tempProp = new Properties();
             tempProp = setupOptions(tempProp);
             for (Map.Entry<Object, Object> oldOptions : oldProperties.entrySet()) {
-                System.out.println("KEY: " + oldOptions.getKey() + " | VALUE: " + oldOptions.getValue());
                 tempProp.setProperty((String) oldOptions.getKey(), (String) oldOptions.getValue());
             }
             tempProp.setProperty("version", currentAppVersion);

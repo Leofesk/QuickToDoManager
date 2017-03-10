@@ -16,6 +16,7 @@ public class Note {
         this.deadline = deadline;
         this.createdTime = createdTime;
         this.endTime = endTime;
+
         this.status = status;
     }
 

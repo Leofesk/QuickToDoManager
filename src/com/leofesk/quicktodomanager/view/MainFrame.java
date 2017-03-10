@@ -9,6 +9,7 @@ import com.leofesk.quicktodomanager.view.notes.EditFrame;
 import com.leofesk.quicktodomanager.view.settings.GeneralFrame;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -188,12 +189,12 @@ public class MainFrame extends JFrame {
 
         textAreaForViewCurrentNote.setWrapStyleWord(true);
         textAreaForViewCurrentNote.setLineWrap(true);
-        textAreaForViewCurrentNote.setMargin(new Insets(5, 5, 5, 5));
+        textAreaForViewCurrentNote.setMargin(new Insets(10, 10, 10, 10));
 
         labelForInfoAndMessages.setHorizontalAlignment(SwingConstants.CENTER);
         labelForInfoAndMessages.setText(Message.getText("infoTipAtStartup"));
 
-        panelForViewCurrentNote.setBorder(BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        panelForViewCurrentNote.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
         labelNoteNameForViewCurrentNote.setHorizontalAlignment(SwingConstants.CENTER);
         labelNoteNameForViewCurrentNote.setText(Message.getText("viewTitle"));
@@ -202,10 +203,11 @@ public class MainFrame extends JFrame {
         textAreaForViewCurrentNote.setColumns(20);
         textAreaForViewCurrentNote.setRows(5);
         textAreaForViewCurrentNote.setText(Message.getText("viewText"));
-        textAreaForViewCurrentNote.setBorder(null);
+        textAreaForViewCurrentNote.setBorder(BorderFactory.createCompoundBorder(null,
+                BorderFactory.createEmptyBorder(3, 3, 3, 3)));
         scrollPaneForViewNote.setViewportView(textAreaForViewCurrentNote);
 
-        panelForStatsAboutNote.setBorder(BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        panelForStatsAboutNote.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
         labelDeadlineDate.setHorizontalAlignment(SwingConstants.CENTER);
         labelCreatedDate.setHorizontalAlignment(SwingConstants.CENTER);
@@ -219,10 +221,8 @@ public class MainFrame extends JFrame {
         labelCreatedDate.setText(Message.getText("clearViewNoteCreated"));
         labelEndDate.setText(Message.getText("clearViewNoteEnd"));
 
-
         buttonChangeStatus.setText(Message.getText("viewButtonApplyStatus"));
         buttonChangeStatus.setEnabled(false);
-
 
         comboBoxSelectStatusForNote.setModel(new DefaultComboBoxModel<>(new String[]{
                 Message.getText("viewComboBoxValueInWork"),
