@@ -114,25 +114,28 @@ public class EditFrame extends JFrame {
     }
 
     private void actionButtonEdit() {
+        if (DataBaseWorker.isEdited()) {
+            if (DataBaseWorker.isCorrectNote(textFieldTaskName.getText(), textArea.getText(), textFieldDeadlineDate.getText())) {
+                editNote();
+            } else {
+                JOptionPane.showMessageDialog(null, Message.getText("errorButtonEditText"), Message.getText("errorButtonEditTitle"), JOptionPane.ERROR_MESSAGE);
+            }
+        }else {
+            closeWindow();
+        }
+    }
+
+    private void editNote() {
         if (DataBaseWorker.checkStatusForCurrentNote()) {
-            editNote();
+            DataBaseWorker.editNoteFromTable(textFieldTaskName.getText(), textArea.getText(), textFieldDeadlineDate.getText());
         } else {
             if (JOptionPane.showConfirmDialog(null,
                     Message.getText("editNoteConfirmText"),
                     Message.getText("editNoteConfirmTitle"),
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-                editNote();
+                DataBaseWorker.editNoteFromTable(textFieldTaskName.getText(), textArea.getText(), textFieldDeadlineDate.getText());
             }
-            closeWindow();
-        }
-    }
-
-    private void editNote() {
-        if (DataBaseWorker.isCorrectNote(textFieldTaskName.getText(), textArea.getText(), textFieldDeadlineDate.getText())) {
-            DataBaseWorker.editNoteFromTable(textFieldTaskName.getText(), textArea.getText(), textFieldDeadlineDate.getText());
-        } else {
-            DataBaseWorker.showMessage(Message.getText("errorButtonEdit"));
         }
         closeWindow();
     }
@@ -152,5 +155,17 @@ public class EditFrame extends JFrame {
 
     public static void setTextFieldTaskName(String title) {
         textFieldTaskName.setText(title);
+    }
+
+    public static JTextArea getTextArea() {
+        return textArea;
+    }
+
+    public static JTextField getTextFieldDeadlineDate() {
+        return textFieldDeadlineDate;
+    }
+
+    public static JTextField getTextFieldTaskName() {
+        return textFieldTaskName;
     }
 }

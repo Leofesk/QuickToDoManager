@@ -28,6 +28,7 @@ import static com.leofesk.quicktodomanager.model.Database.checkStatus;
 public class DataBaseWorker {
     private static int currentNoteID;
     private static Note note;
+    private static Note tmpNoteData;
 
     private static void updateTableData() {
         Database.getAllNotesFromDatabase();
@@ -49,6 +50,7 @@ public class DataBaseWorker {
 
     public static void chooseDatabase() {
         JFileChooser chooseDB = new JFileChooser();
+        chooseDB.setCurrentDirectory(new File(Options.getOptionsValue("customDatabasePath")));
         FileFilter filter = new FileNameExtensionFilter(Message.getText("dbwChooseDBDesc") + " | .qtdm", "qtdm");
         chooseDB.setAcceptAllFileFilterUsed(false);
         chooseDB.setFileFilter(filter);
@@ -223,6 +225,7 @@ public class DataBaseWorker {
             EditFrame.setTextFieldTaskName(note.getTitle());
             EditFrame.setTextArea(note.getText());
             EditFrame.setTextFieldDeadlineDate(note.getDeadline());
+            tmpNoteData = note;
         } catch (Exception e) {
             showMessage(Message.getText("errorDBWAddNoteToFrame"));
         }
@@ -293,11 +296,21 @@ public class DataBaseWorker {
     }
 
     public static boolean checkStatusForCurrentNote() {
-        System.out.println(note.getEndTime());
         if (!isDate(note.getEndTime())) {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public static boolean isEdited() {
+        if ((tmpNoteData.getTitle().equals(EditFrame.getTextFieldTaskName().getText()))&&
+                (tmpNoteData.getText().equals(EditFrame.getTextArea().getText()))&&
+                (tmpNoteData.getDeadline().equals(EditFrame.getTextFieldDeadlineDate().getText()))) {
+        return false;
+        }
+        else  {
+            return true;
         }
     }
 }
